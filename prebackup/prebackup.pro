@@ -25,11 +25,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
 	mainwindow.cpp \
 	directory.cpp \
-	snapshot.cpp
+	snapshot.cpp \
+    itemModelSnapshot.cpp
 
 HEADERS  += mainwindow.h \
 	directory.h \
-	snapshot.h
+	snapshot.h \
+    itemModelSnapshot.h
 
 FORMS    += mainwindow.ui
 
