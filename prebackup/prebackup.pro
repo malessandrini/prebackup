@@ -4,9 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT += core gui widgets
+CONFIG += release c++11
 
 TARGET = prebackup
 TEMPLATE = app
@@ -24,8 +23,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+	mainwindow.cpp \
+	directory.cpp \
+	snapshot.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+	directory.h \
+	snapshot.h
 
 FORMS    += mainwindow.ui
+
+MOC_DIR = .moc
+OBJECTS_DIR = .obj
+UI_DIR = .ui
+RCC_DIR = .rcc
