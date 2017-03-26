@@ -8,7 +8,7 @@ using namespace std;
 Snapshot::Snapshot(vector<string> const &roots):
 	timestamp(time(nullptr))
 {
-	for (string const &r: roots) rootDirs.push_back(Directory(r));
+	for (string const &r: roots) rootDirs.push_back(Directory(r, nullptr));
 }
 
 

@@ -30,8 +30,6 @@ public:
 
 private:
 	std::shared_ptr<Snapshot> snapshot;
-	std::map<Directory*, Directory*> parentMap;
-	void rebuildIndexes();
 };
 
 

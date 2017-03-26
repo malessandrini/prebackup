@@ -11,8 +11,8 @@ using namespace std;
 const string Directory::excludeMarker("_nobackup_");
 
 
-Directory::Directory(string const &_name):
-	name(_name)
+Directory::Directory(string const &_name, const Directory *_parent):
+	name(_name), parent(_parent)
 {}
 
 
@@ -70,7 +70,7 @@ void Directory::scan(string const &parentPath) {
 	} while(true);
 	// scan subdirectories
 	for (string const &subd: dirNames) {
-		subDirs.push_back(Directory(subd));
+		subDirs.push_back(Directory(subd, this));
 		subDirs.back().scan(dirFullPath);
 		totSize += subDirs.back().getTotSize();
 		errors = errors || subDirs.back().hasErrors();

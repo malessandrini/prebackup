@@ -10,9 +10,10 @@
 
 class Directory {
 public:
-	Directory(std::string const &name);
+	Directory(std::string const &name, const Directory *parent);
 	void scan(std::string const &parentPath);
 	std::string getName() const { return name; }
+	const Directory * getParent() const { return parent; }
 	uint64_t getFileSize() const { return fileSize; }
 	uint64_t getTotSize() const { return totSize; }
 	bool isExcluded() const { return excluded; }
@@ -24,6 +25,7 @@ public:
 	void sortSubDirs(std::function<bool(const Directory&, const Directory&)>);
 private:
 	std::string name;
+	const Directory *parent;
 	uint64_t fileSize = 0;
 	uint64_t totSize = 0;
 	bool excluded = false;
