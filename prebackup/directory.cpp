@@ -70,15 +70,15 @@ void Directory::scan(string const &parentPath) {
 	} while(true);
 	// scan subdirectories
 	for (string const &subd: dirNames) {
-		subDirs.push_back(Directory(subd, this));
-		subDirs.back().scan(dirFullPath);
-		totSize += subDirs.back().getTotSize();
-		errors = errors || subDirs.back().hasErrors();
+		subDirs.push_back(new Directory(subd, this));
+		subDirs.back()->scan(dirFullPath);
+		totSize += subDirs.back()->getTotSize();
+		errors = errors || subDirs.back()->hasErrors();
 	}
 }
 
 
-void Directory::sortSubDirs(std::function<bool(const Directory&, const Directory&)> func) {
+void Directory::sortSubDirs(std::function<bool(const Directory*, const Directory*)> func) {
 	std::sort(subDirs.begin(), subDirs.end(), func);
-	for (Directory &d: subDirs) d.sortSubDirs(func);
+	for (Directory *d: subDirs) d->sortSubDirs(func);
 }

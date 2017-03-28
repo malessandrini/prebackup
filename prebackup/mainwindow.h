@@ -1,22 +1,32 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+
 #include <QMainWindow>
+#include <memory>
+#include <utility>
 
-namespace Ui {
-class MainWindow;
-}
 
-class MainWindow : public QMainWindow
-{
+class Snapshot;
+class QTreeView;
+
+
+class MainWindow : public QMainWindow {
 	Q_OBJECT
-
 public:
-	explicit MainWindow(QWidget *parent = 0);
-	~MainWindow();
+	MainWindow(QWidget *parent = 0);
 
 private:
-	Ui::MainWindow *ui;
+	std::pair<int, Qt::SortOrder> currentSorting;
+	QAction *actionScan, *actionScanRoot, *actionOpen, *actionSave;
+	QTreeView *treeView;
+
+private slots:
+	void sortIndicatorChanged(int, Qt::SortOrder);
+	void scanNew();
+	void snapshotOpen();
+	void snapshotSave();
 };
+
 
 #endif // MAINWINDOW_H

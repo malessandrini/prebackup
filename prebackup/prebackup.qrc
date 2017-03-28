@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/Folder.png</file>
+        <file>res/Dialog-warning.png</file>
+        <file>res/Edit-delete.png</file>
+    </qresource>
+</RCC>

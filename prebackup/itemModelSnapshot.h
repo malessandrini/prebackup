@@ -10,13 +10,12 @@ class Snapshot;
 class Directory;
 
 
-class ItemModelSnapshot : public QAbstractItemModel
-{
+class ItemModelSnapshot : public QAbstractItemModel {
 	Q_OBJECT
-
 public:
 	ItemModelSnapshot(QObject *parent = 0);
 	void setSnapshot(std::shared_ptr<Snapshot>);
+	void sortRequested(int, Qt::SortOrder);
 
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
@@ -30,6 +29,9 @@ public:
 
 private:
 	std::shared_ptr<Snapshot> snapshot;
+	std::pair<int, bool> currentSorting { -1, false };
+	QVariant getContents(const QModelIndex &index, int role, bool header) const;  // used for both data and headers
+	void sortSnapshot(int column, bool desc);
 };
 
 
