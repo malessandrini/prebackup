@@ -15,6 +15,7 @@ class ItemModelSnapshot : public QAbstractItemModel {
 public:
 	ItemModelSnapshot(QObject *parent = 0);
 	void setSnapshot(std::shared_ptr<Snapshot>);
+	std::shared_ptr<Snapshot> getSnapshot() const { return snapshot; }
 	void sortRequested(int, Qt::SortOrder);
 
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;

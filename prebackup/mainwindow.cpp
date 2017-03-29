@@ -80,7 +80,14 @@ void MainWindow::snapshotOpen() {
 
 
 void MainWindow::snapshotSave() {
-
+	try {
+		WaitCursor _;
+		dynamic_cast<ItemModelSnapshot*>(treeView->model())->getSnapshot()->save("aaa.snapshot");
+	}
+	catch (std::exception &) {
+		QMessageBox::critical(this, "Error", "Unable to save file!");
+	}
+	// TODO: write to status bar?
 }
 
 

@@ -9,16 +9,9 @@
 
 
 template<class T>
-class VectorOfPointers: private std::vector<T*> {
+class VectorOfPointers: public std::vector<T*> {
 public:
 	~VectorOfPointers() { for (T* item: *this) delete item; }
-	using std::vector<T*>::push_back;
-	using std::vector<T*>::back;
-	using std::vector<T*>::clear;
-	using std::vector<T*>::begin;
-	using std::vector<T*>::end;
-	using std::vector<T*>::cbegin;
-	using std::vector<T*>::cend;
 };
 
 
@@ -45,6 +38,7 @@ private:
 	bool excluded = false;
 	bool errors = false;
 	VectorOfPointers<Directory> subDirs;
+	friend class Snapshot;  // to save/load from file easily
 private:
 	static const std::string excludeMarker;
 	void clear();

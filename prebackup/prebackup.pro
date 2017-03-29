@@ -23,6 +23,8 @@ HEADERS  += mainwindow.h \
 	snapshot.h \
 	itemModelSnapshot.h
 
+LIBS += -lsqlite3
+
 MOC_DIR = .moc
 OBJECTS_DIR = .obj
 UI_DIR = .ui
