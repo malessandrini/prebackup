@@ -57,6 +57,12 @@ void Snapshot::save(std::string const &file) {
 		"filesize INTEGER, totsize INTEGER, excluded INTEGER, errors INTEGER)");
 	doQuery(db, "create index index_dir on dir (id)");
 	doQuery(db, "begin");
+	// use row with id 0 to save snapshot's general information
+	ostringstream oss;
+	oss << "insert into dir (id, filesize, totsize) values (0, " << timestamp << ", " << totSize << ")";
+	string s = oss.str();
+	doQuery(db, s.c_str());
+	// recurse directories
 	InsertData ins;
 	ins.id = 1;  // next id
 	if (sqlite3_prepare_v2(db, "insert into dir (id, name, parent, filesize, totsize, excluded, errors) "
