@@ -44,10 +44,10 @@ private:
 	static std::runtime_error saveError;
 	struct InsertData {
 		sqlite3_stmt *query;
-		int id;
+		uint32_t id;
 		int bindId, bindName, bindParent, bindFilesize, bindTotsize, bindExcluded, bindErrors;
 	};
-	static void saveRecur(InsertData &, int parentId, std::vector<Directory*>::const_iterator, std::vector<Directory*>::const_iterator);  // throws
+	static void saveRecur(InsertData &, uint32_t parentId, std::vector<Directory*>::const_iterator, std::vector<Directory*>::const_iterator);  // throws
 };
 
 

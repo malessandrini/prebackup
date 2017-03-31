@@ -2,6 +2,7 @@
 #include <sstream>
 #include <iomanip>
 #include <memory>
+#include <map>
 using namespace std;
 
 
@@ -88,7 +89,7 @@ void Snapshot::doQuery(sqlite3 *db, const char *query) {
 }
 
 
-void Snapshot::saveRecur(InsertData &ins, int parentId, std::vector<Directory*>::const_iterator b, std::vector<Directory*>::const_iterator e) {
+void Snapshot::saveRecur(InsertData &ins, uint32_t parentId, std::vector<Directory*>::const_iterator b, std::vector<Directory*>::const_iterator e) {
 	for (; b != e; ++b) {
 		// insert row for this directory
 		int id = ins.id++;
@@ -106,4 +107,53 @@ void Snapshot::saveRecur(InsertData &ins, int parentId, std::vector<Directory*>:
 		// recurse subdirs of current directory
 		saveRecur(ins, id, (*b)->cbegin(), (*b)->cend());
 	}
+}
+
+
+Snapshot * Snapshot::load(string const &file) {
+	unique_ptr<Snapshot> snap(new Snapshot({}));  // delete object automatically in case of exception
+	runtime_error loadError("Unable to load file");
+	sqlite3 *db;
+	int r = sqlite3_open_v2(file.c_str(), &db, SQLITE_OPEN_READONLY, nullptr);
+	shared_ptr<sqlite3> finalizeDb(db, sqlite3_close);  // free object automatically
+	if (r != SQLITE_OK) throw loadError;
+	sqlite3_stmt *query;
+	if (sqlite3_prepare_v2(db, "select id, name, parent, filesize, totsize, excluded, errors from dir order by id",
+		-1, &query, nullptr) != SQLITE_OK) throw loadError;
+	shared_ptr<sqlite3_stmt> finalizeQuery(query, sqlite3_finalize);  // free object automatically
+	map<uint32_t, Directory*> idMap;
+	bool firstRow = true;
+	while ((r = sqlite3_step(query)) == SQLITE_ROW) {
+		uint32_t id = sqlite3_column_int(query, 0);
+		const unsigned char *name = sqlite3_column_text(query, 1);
+		uint32_t parentId = sqlite3_column_int(query, 2);
+		uint64_t fileSize = sqlite3_column_int64(query, 3);
+		uint64_t totSize = sqlite3_column_int64(query, 4);
+		bool excluded = sqlite3_column_int(query, 5);
+		bool errors = sqlite3_column_int(query, 6);
+		if (firstRow) {
+			if (id != 0) throw loadError;
+			firstRow = false;
+			snap->timestamp = fileSize;
+			snap->totSize = totSize;
+			continue;
+		}
+		Directory *parentDir = nullptr;
+		if (parentId) {
+			auto p = idMap.find(parentId);
+			if (p == idMap.end()) throw loadError;
+			parentDir = p->second;
+		}
+		Directory *dir = new Directory((const char*)name, parentDir);
+		idMap[id] = dir;
+		if (parentDir) parentDir->subDirs.push_back(dir);
+		else snap->rootDirs.push_back(dir);
+		dir->fileSize = fileSize;
+		dir->totSize = totSize;
+		dir->excluded = excluded;
+		dir->errors = errors;
+	}
+	if (r != SQLITE_DONE) throw loadError;
+	// success, return newly created object
+	return snap.release();
 }

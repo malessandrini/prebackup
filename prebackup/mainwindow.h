@@ -7,7 +7,7 @@
 #include <utility>
 
 
-class Snapshot;
+class ItemModelSnapshot;
 class QTreeView;
 
 
@@ -20,6 +20,7 @@ private:
 	std::pair<int, Qt::SortOrder> currentSorting;
 	QAction *actionScan, *actionScanRoot, *actionOpen, *actionSave;
 	QTreeView *treeView;
+	ItemModelSnapshot *snapshotModel;
 
 private slots:
 	void sortIndicatorChanged(int, Qt::SortOrder);

@@ -12,6 +12,7 @@
 #include <QAction>
 #include <QMenuBar>
 #include <QHeaderView>
+#include <QStatusBar>
 using namespace std;
 
 
@@ -42,15 +43,20 @@ MainWindow::MainWindow(QWidget *parent) :
 	statusBar();
 
 	QMenu *menuSnapshot = menuBar()->addMenu("&Snapshot");
-	actionScan = menuSnapshot->addAction(QIcon(), "Scan...", this, &MainWindow::scanNew);
-	actionScanRoot = menuSnapshot->addAction(QIcon(), "Scan as root...", this, &MainWindow::scanNew);  // TODO
+	actionScan = menuSnapshot->addAction(QIcon(), "New snapshot...", this, &MainWindow::scanNew);
+	actionScan->setStatusTip("Scan a new snapshot");
+	actionScanRoot = menuSnapshot->addAction(QIcon(), "New snapshot as root...", this, &MainWindow::scanNew);  // TODO
 	menuSnapshot->addSeparator();
-	actionOpen = menuSnapshot->addAction(QIcon::fromTheme("document-open"), "&Open previous...",
+	actionOpen = menuSnapshot->addAction(QIcon::fromTheme("document-open"), "&Open snapshot...",
 		this, &MainWindow::snapshotOpen, QKeySequence::Open);
+	actionOpen->setStatusTip("Open a previously saved snapshot");
 	actionSave = menuSnapshot->addAction(QIcon::fromTheme("document-save"), "&Save snapshot...",
 		this, &MainWindow::snapshotSave, QKeySequence::Save);
+	actionSave->setStatusTip("Save the current snapshot");
+	// TODO: enable save only if needed, and check at exit
 
-	treeView->setModel(new ItemModelSnapshot(this));
+	snapshotModel = new ItemModelSnapshot(this);
+	treeView->setModel(snapshotModel);
 	treeView->header()->setSectionsMovable(false);
 	currentSorting = { 2, Qt::DescendingOrder };
 	connect(treeView->header(), &QHeaderView::sortIndicatorChanged, this, &MainWindow::sortIndicatorChanged);
@@ -69,25 +75,32 @@ void MainWindow::scanNew() {
 	WaitCursor _;
 	shared_ptr<Snapshot> snap(new Snapshot(vroots));
 	snap->scan();
-	dynamic_cast<ItemModelSnapshot*>(treeView->model())->setSnapshot(snap);
+	snapshotModel->setSnapshot(snap);
 	sortIndicatorChanged(currentSorting.first, currentSorting.second);  // make new snapshot sort
 }
 
 
 void MainWindow::snapshotOpen() {
-
+	try {
+		WaitCursor _;
+		snapshotModel->setSnapshot(shared_ptr<Snapshot>(Snapshot::load("aaa.snapshot")));
+		sortIndicatorChanged(currentSorting.first, currentSorting.second);  // make new snapshot sort
+	}
+	catch (std::exception &) {
+		QMessageBox::critical(this, "Error", "Unable to load file!");
+	}
 }
 
 
 void MainWindow::snapshotSave() {
 	try {
 		WaitCursor _;
-		dynamic_cast<ItemModelSnapshot*>(treeView->model())->getSnapshot()->save("aaa.snapshot");
+		snapshotModel->getSnapshot()->save("aaa.snapshot");
+		statusBar()->showMessage("Snapshot saved to xyz");
 	}
 	catch (std::exception &) {
 		QMessageBox::critical(this, "Error", "Unable to save file!");
 	}
-	// TODO: write to status bar?
 }
 
 
@@ -99,7 +112,7 @@ void MainWindow::sortIndicatorChanged(int column, Qt::SortOrder order)
 	case 3:
 		currentSorting = { column, order };
 		WaitCursor _;
-		dynamic_cast<ItemModelSnapshot*>(treeView->model())->sortRequested(column, order);
+		snapshotModel->sortRequested(column, order);
 		return;
 	}
 	// invalid column
