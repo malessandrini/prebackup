@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT += core gui widgets
-CONFIG += release c++11
+CONFIG += debug c++11
 
 TARGET = prebackup
 TEMPLATE = app
@@ -16,12 +16,14 @@ SOURCES += main.cpp\
 	mainwindow.cpp \
 	directory.cpp \
 	snapshot.cpp \
-	itemModelSnapshot.cpp
+	itemModelSnapshot.cpp \
+	dialogRoots.cpp
 
 HEADERS  += mainwindow.h \
 	directory.h \
 	snapshot.h \
-	itemModelSnapshot.h
+	itemModelSnapshot.h \
+	dialogRoots.h
 
 LIBS += -lsqlite3
 

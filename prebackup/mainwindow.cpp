@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "itemModelSnapshot.h"
 #include "snapshot.h"
+#include "dialogRoots.h"
 #include <QSettings>
 #include <QDebug>
 #include <vector>
@@ -52,7 +53,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	statusBar();
 
 	QMenu *menuSnapshot = menuBar()->addMenu("&Snapshot");
-	actionScan = menuSnapshot->addAction(QIcon(), "New snapshot...", this, &MainWindow::scanNew);
+	actionRoots = menuSnapshot->addAction(QIcon(), "Select &root directories...", this, &MainWindow::selectRoots);
+	actionRoots->setStatusTip("Select which directories to scan");
+	actionScan = menuSnapshot->addAction(QIcon(), "&New snapshot...", this, &MainWindow::scanNew);
 	actionScan->setStatusTip("Scan a new snapshot");
 	actionScanRoot = menuSnapshot->addAction(QIcon(), "New snapshot as root...", this, &MainWindow::scanNew);  // TODO
 	menuSnapshot->addSeparator();
@@ -79,8 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 
-void MainWindow::updateGui()
-{
+void MainWindow::updateGui() {
 	actionSave->setEnabled(!snapshotModel->getSnapshot()->isSaved());
 }
 
@@ -100,8 +102,11 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 void MainWindow::scanNew() {
 	auto roots = QSettings().value("roots").toStringList();
 	if (!roots.size()) {
-		QMessageBox::critical(this, "No directories", "You must add one or more root directories first.");
-		return;
+		QMessageBox::critical(this, "No directories", "You must add one or more main directories first.");
+		DialogRoots d(this);
+		if (d.exec() != QDialog::Accepted) return;
+		roots = QSettings().value("roots").toStringList();
+		if (!roots.size()) return;
 	}
 	vector<string> vroots;
 	for (auto const &r: roots) vroots.push_back(r.toStdString());
@@ -163,8 +168,7 @@ bool MainWindow::snapshotSave() {
 }
 
 
-void MainWindow::sortIndicatorChanged(int column, Qt::SortOrder order)
-{
+void MainWindow::sortIndicatorChanged(int column, Qt::SortOrder order) {
 	switch (column) {
 	case 0:
 	case 2:
@@ -176,4 +180,10 @@ void MainWindow::sortIndicatorChanged(int column, Qt::SortOrder order)
 	}
 	// invalid column
 	treeView->header()->setSortIndicator(currentSorting.first, currentSorting.second);
+}
+
+
+void MainWindow::selectRoots() {
+	DialogRoots d(this);
+	d.exec();
 }

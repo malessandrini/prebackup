@@ -18,7 +18,7 @@ public:
 
 private:
 	std::pair<int, Qt::SortOrder> currentSorting;
-	QAction *actionScan, *actionScanRoot, *actionOpen, *actionSave;
+	QAction *actionRoots, *actionScan, *actionScanRoot, *actionOpen, *actionSave;
 	QTreeView *treeView;
 	ItemModelSnapshot *snapshotModel;
 	QString savePath;
@@ -28,6 +28,7 @@ private:
 
 private slots:
 	void sortIndicatorChanged(int, Qt::SortOrder);
+	void selectRoots();
 	void scanNew();
 	void snapshotOpen();
 	bool snapshotSave();
