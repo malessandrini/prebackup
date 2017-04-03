@@ -21,12 +21,16 @@ private:
 	QAction *actionScan, *actionScanRoot, *actionOpen, *actionSave;
 	QTreeView *treeView;
 	ItemModelSnapshot *snapshotModel;
+	QString savePath;
+	static const QString fileDateFormat;
+	void updateGui();
+	void closeEvent(QCloseEvent*) override;
 
 private slots:
 	void sortIndicatorChanged(int, Qt::SortOrder);
 	void scanNew();
 	void snapshotOpen();
-	void snapshotSave();
+	bool snapshotSave();
 };
 
 
