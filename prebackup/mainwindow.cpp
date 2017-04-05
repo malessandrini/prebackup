@@ -19,6 +19,7 @@
 #include <QDateTime>
 #include <QInputDialog>
 #include <QCloseEvent>
+#include <QLabel>
 using namespace std;
 
 
@@ -45,6 +46,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	auto *centralWidget = new QWidget(this);
 	auto *verticalLayout = new QVBoxLayout(centralWidget);
 	verticalLayout->setContentsMargins(8, 8, 8, 8);
+	labelSnapDate = new QLabel(this);
+	labelSnapSize = new QLabel(this);
+	verticalLayout->addWidget(labelSnapDate);
+	verticalLayout->addWidget(labelSnapSize);
 	treeView = new QTreeView(centralWidget);
 	treeView->setAlternatingRowColors(true);
 	treeView->setSortingEnabled(true);
@@ -84,6 +89,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::updateGui() {
 	actionSave->setEnabled(!snapshotModel->getSnapshot()->isSaved());
+	labelSnapDate->setText("Snapshot date: "
+		+ QDateTime::fromMSecsSinceEpoch(snapshotModel->getSnapshot()->getTimestamp() * qint64(1000)).toString(fileDateFormat));
+	labelSnapSize->setText("Snapshot size: "
+		+ QString::fromStdString(Snapshot::sizeToText(snapshotModel->getSnapshot()->getTotSize())));
 }
 
 

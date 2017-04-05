@@ -9,6 +9,7 @@
 
 class ItemModelSnapshot;
 class QTreeView;
+class QLabel;
 
 
 class MainWindow : public QMainWindow {
@@ -21,6 +22,7 @@ private:
 	QAction *actionRoots, *actionScan, *actionScanRoot, *actionOpen, *actionSave;
 	QTreeView *treeView;
 	ItemModelSnapshot *snapshotModel;
+	QLabel *labelSnapDate, *labelSnapSize;
 	QString savePath;
 	static const QString fileDateFormat;
 	void updateGui();
