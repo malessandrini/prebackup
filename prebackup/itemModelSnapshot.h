@@ -14,6 +14,8 @@ class ItemModelSnapshot : public QAbstractItemModel {
 	Q_OBJECT
 public:
 	ItemModelSnapshot(QObject *parent = 0);
+	ItemModelSnapshot(ItemModelSnapshot const&) = delete;
+	ItemModelSnapshot& operator=(ItemModelSnapshot const&) = delete;
 	void setSnapshot(std::shared_ptr<Snapshot>);
 	std::shared_ptr<Snapshot> getSnapshot() const { return snapshot; }
 	void sortRequested(int, Qt::SortOrder);

@@ -14,6 +14,8 @@
 class Snapshot {
 public:
 	Snapshot(std::vector<std::string> const &roots);
+	Snapshot(Snapshot const&) = delete;
+	Snapshot& operator=(Snapshot const&) = delete;
 	void scan();
 	time_t getTimestamp() const { return timestamp; }
 	uint64_t getTotSize() const { return totSize; }

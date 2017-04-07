@@ -18,6 +18,8 @@ public:
 class Directory {
 public:
 	Directory(std::string const &name, const Directory *parent);
+	Directory(Directory const&) = delete;
+	Directory& operator=(Directory const&) = delete;
 	void scan(std::string const &parentPath);
 	std::string getName() const { return name; }
 	const Directory * getParent() const { return parent; }
