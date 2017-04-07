@@ -20,6 +20,7 @@
 #include <QInputDialog>
 #include <QCloseEvent>
 #include <QLabel>
+#include <QGroupBox>
 using namespace std;
 
 
@@ -46,10 +47,22 @@ MainWindow::MainWindow(QWidget *parent) :
 	auto *centralWidget = new QWidget(this);
 	auto *verticalLayout = new QVBoxLayout(centralWidget);
 	verticalLayout->setContentsMargins(8, 8, 8, 8);
-	labelSnapDate = new QLabel(this);
-	labelSnapSize = new QLabel(this);
-	verticalLayout->addWidget(labelSnapDate);
-	verticalLayout->addWidget(labelSnapSize);
+	auto *laySummary = new QHBoxLayout;
+	verticalLayout->addLayout(laySummary);
+	auto *gb = new QGroupBox("Current snapshot", this);
+	laySummary->addWidget(gb);
+	new QVBoxLayout(gb);
+	labelSnapDate = new QLabel(gb);
+	labelSnapSize = new QLabel(gb);
+	gb->layout()->addWidget(labelSnapDate);
+	gb->layout()->addWidget(labelSnapSize);
+	auto *gb2 = new QGroupBox("Comparing snapshot", this);
+	laySummary->addWidget(gb2);
+	new QVBoxLayout(gb2);
+	labelSnapCompareDate = new QLabel(gb2);
+	labelSnapCompareSize = new QLabel(gb2);
+	gb2->layout()->addWidget(labelSnapCompareDate);
+	gb2->layout()->addWidget(labelSnapCompareSize);
 	treeView = new QTreeView(centralWidget);
 	treeView->setAlternatingRowColors(true);
 	treeView->setSortingEnabled(true);
@@ -58,11 +71,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	statusBar();
 
 	QMenu *menuSnapshot = menuBar()->addMenu("&Snapshot");
-	actionRoots = menuSnapshot->addAction(QIcon(), "Select &root directories...", this, &MainWindow::selectRoots);
+	actionRoots = menuSnapshot->addAction(QIcon(), "Select &main directories...", [this](){ DialogRoots(this).exec(); });
 	actionRoots->setStatusTip("Select which directories to scan");
-	actionScan = menuSnapshot->addAction(QIcon(), "&New snapshot...", this, &MainWindow::scanNew);
+	actionScan = menuSnapshot->addAction(QIcon(), "Scan &new snapshot...", this, &MainWindow::scanNew);
 	actionScan->setStatusTip("Scan a new snapshot");
-	actionScanRoot = menuSnapshot->addAction(QIcon(), "New snapshot as root...", this, &MainWindow::scanNew);  // TODO
+	actionScanRoot = menuSnapshot->addAction(QIcon(), "Scan new snapshot as &root...", this, &MainWindow::scanNew);  // TODO
 	menuSnapshot->addSeparator();
 	actionOpen = menuSnapshot->addAction(QIcon::fromTheme("document-open"), "&Open snapshot...",
 		this, &MainWindow::snapshotOpen, QKeySequence::Open);
@@ -74,7 +87,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	snapshotModel = new ItemModelSnapshot(this);
 	treeView->setModel(snapshotModel);
 	treeView->header()->setSectionsMovable(false);
-	currentSorting = { 2, Qt::DescendingOrder };
+	treeView->header()->setStretchLastSection(false);
+	treeView->header()->setSectionResizeMode(0, QHeaderView::Stretch);
+	currentSorting = { (int)ItemModelSnapshot::Column::TotSize, Qt::DescendingOrder };
 	connect(treeView->header(), &QHeaderView::sortIndicatorChanged, this, &MainWindow::sortIndicatorChanged);
 	treeView->header()->setSortIndicator(currentSorting.first, currentSorting.second);
 
@@ -89,10 +104,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::updateGui() {
 	actionSave->setEnabled(!snapshotModel->getSnapshot()->isSaved());
-	labelSnapDate->setText("Snapshot date: "
-		+ QDateTime::fromMSecsSinceEpoch(snapshotModel->getSnapshot()->getTimestamp() * qint64(1000)).toString(fileDateFormat));
-	labelSnapSize->setText("Snapshot size: "
-		+ QString::fromStdString(Snapshot::sizeToText(snapshotModel->getSnapshot()->getTotSize())));
+	labelSnapDate->setText("Date: " +
+		(snapshotModel->getSnapshot()->isEmpty() ? "-" :
+		QDateTime::fromMSecsSinceEpoch(snapshotModel->getSnapshot()->getTimestamp() * qint64(1000)).toString(fileDateFormat)));
+	labelSnapSize->setText("Size: " +
+		(snapshotModel->getSnapshot()->isEmpty() ? "-" :
+		QString::fromStdString(Snapshot::sizeToText(snapshotModel->getSnapshot()->getTotSize()))));
 }
 
 
@@ -178,21 +195,10 @@ bool MainWindow::snapshotSave() {
 
 
 void MainWindow::sortIndicatorChanged(int column, Qt::SortOrder order) {
-	switch (column) {
-	case 0:
-	case 2:
-	case 3:
+	if (ItemModelSnapshot::isColumnSortable(column)) {
 		currentSorting = { column, order };
 		WaitCursor _;
 		snapshotModel->sortRequested(column, order);
-		return;
 	}
-	// invalid column
-	treeView->header()->setSortIndicator(currentSorting.first, currentSorting.second);
-}
-
-
-void MainWindow::selectRoots() {
-	DialogRoots d(this);
-	d.exec();
+	else treeView->header()->setSortIndicator(currentSorting.first, currentSorting.second);
 }

@@ -28,6 +28,9 @@ public:
 
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
+	enum class Column { Name, State, TotSize, FileSize, _ColumnCount_ };
+	static bool isColumnSortable(int);
+
 private:
 	std::shared_ptr<Snapshot> snapshot;
 	std::pair<int, bool> currentSorting { -1, false };

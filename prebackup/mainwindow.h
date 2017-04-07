@@ -22,7 +22,7 @@ private:
 	QAction *actionRoots, *actionScan, *actionScanRoot, *actionOpen, *actionSave;
 	QTreeView *treeView;
 	ItemModelSnapshot *snapshotModel;
-	QLabel *labelSnapDate, *labelSnapSize;
+	QLabel *labelSnapDate, *labelSnapSize, *labelSnapCompareDate, *labelSnapCompareSize;
 	QString savePath;
 	static const QString fileDateFormat;
 	void updateGui();
@@ -30,7 +30,6 @@ private:
 
 private slots:
 	void sortIndicatorChanged(int, Qt::SortOrder);
-	void selectRoots();
 	void scanNew();
 	void snapshotOpen();
 	bool snapshotSave();

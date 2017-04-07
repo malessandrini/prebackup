@@ -18,6 +18,7 @@ public:
 	time_t getTimestamp() const { return timestamp; }
 	uint64_t getTotSize() const { return totSize; }
 	bool isSaved() const { return !needSave; }
+	bool isEmpty() const { return !rootDirs.size(); }
 
 	// root directories
 	std::vector<Directory*>::const_iterator cbegin() const { return rootDirs.cbegin(); }
