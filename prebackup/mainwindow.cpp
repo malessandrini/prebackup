@@ -51,22 +51,26 @@ MainWindow::MainWindow(QWidget *parent) :
 	verticalLayout->addLayout(laySummary);
 	auto *gb = new QGroupBox("Current snapshot", this);
 	laySummary->addWidget(gb);
-	new QVBoxLayout(gb);
+	auto *laygb = new QVBoxLayout(gb);
 	labelSnapDate = new QLabel(gb);
 	labelSnapSize = new QLabel(gb);
-	gb->layout()->addWidget(labelSnapDate);
-	gb->layout()->addWidget(labelSnapSize);
+	labelSnapDiff = new QLabel(gb);
+	laygb->addWidget(labelSnapDate);
+	laygb->addWidget(labelSnapSize);
+	laygb->addWidget(labelSnapDiff);
+	laygb->addStretch();  // align labels at top
 	auto *gb2 = new QGroupBox("Comparing snapshot", this);
 	laySummary->addWidget(gb2);
-	new QVBoxLayout(gb2);
+	auto *laygb2 = new QVBoxLayout(gb2);
 	labelSnapCompareDate = new QLabel(gb2);
 	labelSnapCompareSize = new QLabel(gb2);
-	gb2->layout()->addWidget(labelSnapCompareDate);
-	gb2->layout()->addWidget(labelSnapCompareSize);
+	laygb2->addWidget(labelSnapCompareDate);
+	laygb2->addWidget(labelSnapCompareSize);
+	laygb2->addStretch();  // align labels at top
 	treeView = new QTreeView(centralWidget);
 	treeView->setAlternatingRowColors(true);
 	treeView->setSortingEnabled(true);
-	verticalLayout->addWidget(treeView);
+	verticalLayout->addWidget(treeView, 1);
 	setCentralWidget(centralWidget);
 	statusBar();
 
@@ -83,6 +87,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	actionSave = menuSnapshot->addAction(QIcon::fromTheme("document-save"), "&Save snapshot...",
 		this, &MainWindow::snapshotSave, QKeySequence::Save);
 	actionSave->setStatusTip("Save the current snapshot");
+
+	QMenu *menuCompare = menuBar()->addMenu("&Compare");
+	actionCompareOpen = menuCompare->addAction(QIcon::fromTheme("document-open"), "&Open snapshot for comparison...",
+		this, &MainWindow::compareOpen);
+	actionCompareOpen->setStatusTip("Open an existing snapshot for comparison");
+	actionCompareClose = menuCompare->addAction(QIcon::fromTheme("document-close"), "&Close comparison snapshot",
+		this, &MainWindow::compareClose);
+	actionCompareClose->setStatusTip("Close comparison snapshot");
 
 	snapshotModel = new ItemModelSnapshot(this);
 	treeView->setModel(snapshotModel);
@@ -104,28 +116,45 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::updateGui() {
 	actionSave->setEnabled(!snapshotModel->getSnapshot()->isSaved());
+
 	labelSnapDate->setText("Date: " +
 		(snapshotModel->getSnapshot()->isEmpty() ? "-" :
 		QDateTime::fromMSecsSinceEpoch(snapshotModel->getSnapshot()->getTimestamp() * qint64(1000)).toString(fileDateFormat)));
 	labelSnapSize->setText("Size: " +
 		(snapshotModel->getSnapshot()->isEmpty() ? "-" :
 		QString::fromStdString(Snapshot::sizeToText(snapshotModel->getSnapshot()->getTotSize()))));
+	labelSnapDiff->setText("Difference: " +
+		(snapshotModel->getComparedSnapshot()->isEmpty() ? "-" :
+		QString::fromStdString(Snapshot::relSizeToText(
+			(int64_t)snapshotModel->getSnapshot()->getTotSize() - (int64_t)snapshotModel->getComparedSnapshot()->getTotSize()
+		))));
+
+	labelSnapCompareDate->setText("Date: " +
+		(snapshotModel->getComparedSnapshot()->isEmpty() ? "-" :
+		QDateTime::fromMSecsSinceEpoch(snapshotModel->getComparedSnapshot()->getTimestamp() * qint64(1000)).toString(fileDateFormat)));
+	labelSnapCompareSize->setText("Size: " +
+		(snapshotModel->getComparedSnapshot()->isEmpty() ? "-" :
+		QString::fromStdString(Snapshot::sizeToText(snapshotModel->getComparedSnapshot()->getTotSize()))));
+}
+
+
+bool MainWindow::checkDataSaved() {
+	if (snapshotModel->getSnapshot()->isSaved()) return true;
+	auto reply = QMessageBox::question(this, "Save snapshot", "Save current snapshot?",
+		QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes);
+	if (reply == QMessageBox::No) return true;
+	else if (reply == QMessageBox::Yes) return snapshotSave();
+	else return false;
 }
 
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-	if (snapshotModel->getSnapshot()->isSaved()) return;
-	auto reply = QMessageBox::question(this, "Save snapshot", "Save current snapshot?",
-		QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes);
-	if (reply == QMessageBox::No) return;
-	else if (reply == QMessageBox::Yes) {
-		if (!snapshotSave()) event->ignore();
-	}
-	else event->ignore();
+	if (!checkDataSaved()) event->ignore();
 }
 
 
 void MainWindow::scanNew() {
+	if (!checkDataSaved()) return;
 	auto roots = QSettings().value("roots").toStringList();
 	if (!roots.size()) {
 		QMessageBox::critical(this, "No directories", "You must add one or more main directories first.");
@@ -138,14 +167,14 @@ void MainWindow::scanNew() {
 	for (auto const &r: roots) vroots.push_back(r.toStdString());
 	WaitCursor _;
 	shared_ptr<Snapshot> snap(new Snapshot(vroots));
-	snap->scan();
 	snapshotModel->setSnapshot(snap);
 	sortIndicatorChanged(currentSorting.first, currentSorting.second);  // make new snapshot sort
 	updateGui();
 }
 
 
-void MainWindow::snapshotOpen() {
+shared_ptr<Snapshot> MainWindow::loadSnapshot() {
+	shared_ptr<Snapshot> result;
 	// get list of saved snapshots
 	QDir d = QDir(savePath);
 	d.setFilter(QDir::Files);
@@ -159,20 +188,30 @@ void MainWindow::snapshotOpen() {
 	}
 	if (snapList.empty()) {
 		QMessageBox::critical(this, "No snapshots", "No saved snapshots found");
-		return;
+		return result;
 	}
 	bool ok;
 	QString fileName = QInputDialog::getItem(this, "Open snapshot", "Select snapshot to open:", snapList, 0, false, &ok);
-	if (!ok || fileName.isEmpty()) return;
+	if (!ok || fileName.isEmpty()) return result;
 	fileName = QDir(savePath).absoluteFilePath(fileName + ".snapshot");
 	try {
 		WaitCursor _;
-		snapshotModel->setSnapshot(shared_ptr<Snapshot>(Snapshot::load(fileName.toStdString())));
-		sortIndicatorChanged(currentSorting.first, currentSorting.second);  // make new snapshot sort
+		result.reset(Snapshot::load(fileName.toStdString()));
 	}
 	catch (std::exception &) {
 		QMessageBox::critical(this, "Error", "Unable to load file!");
 	}
+	return result;
+}
+
+
+void MainWindow::snapshotOpen() {
+	if (!checkDataSaved()) return;
+	auto s = loadSnapshot();
+	if (!s) return;
+	WaitCursor _;
+	snapshotModel->setSnapshot(s);
+	sortIndicatorChanged(currentSorting.first, currentSorting.second);  // make new snapshot sort
 	updateGui();
 }
 
@@ -191,6 +230,24 @@ bool MainWindow::snapshotSave() {
 	statusBar()->showMessage("Snapshot saved to " + fileName);
 	updateGui();
 	return true;
+}
+
+
+void MainWindow::compareOpen() {
+	auto s = loadSnapshot();
+	if (!s) return;
+	WaitCursor _;
+	snapshotModel->setComparedSnapshot(s);
+	sortIndicatorChanged(currentSorting.first, currentSorting.second);  // make snapshot sort
+	updateGui();
+}
+
+
+void MainWindow::compareClose() {
+	WaitCursor _;
+	snapshotModel->removeComparedSnapshot();
+	sortIndicatorChanged(currentSorting.first, currentSorting.second);  // make snapshot sort
+	updateGui();
 }
 
 

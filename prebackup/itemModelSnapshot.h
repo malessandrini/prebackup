@@ -17,7 +17,10 @@ public:
 	ItemModelSnapshot(ItemModelSnapshot const&) = delete;
 	ItemModelSnapshot& operator=(ItemModelSnapshot const&) = delete;
 	void setSnapshot(std::shared_ptr<Snapshot>);
-	std::shared_ptr<Snapshot> getSnapshot() const { return snapshot; }
+	void setComparedSnapshot(std::shared_ptr<Snapshot>);
+	void removeComparedSnapshot();
+	const Snapshot * getSnapshot() const { return snapshot.get(); }
+	const Snapshot * getComparedSnapshot() const { return comparedSnapshot.get(); }
 	void sortRequested(int, Qt::SortOrder);
 
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
@@ -30,14 +33,15 @@ public:
 
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
-	enum class Column { Name, State, TotSize, FileSize, _ColumnCount_ };
+	enum class Column { Name, State, TotSize, FileSize, DiffSize, _ColumnCount_ };
 	static bool isColumnSortable(int);
 
 private:
-	std::shared_ptr<Snapshot> snapshot;
+	std::shared_ptr<Snapshot> snapshot, comparedSnapshot;
 	std::pair<int, bool> currentSorting { -1, false };
 	QVariant getContents(const QModelIndex &index, int role, bool header) const;  // used for both data and headers
 	void sortSnapshot(int column, bool desc);
+	void recomputeDifference();
 };
 
 

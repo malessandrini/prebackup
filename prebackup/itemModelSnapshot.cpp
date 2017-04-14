@@ -10,7 +10,7 @@ using namespace std;
 
 
 ItemModelSnapshot::ItemModelSnapshot(QObject *parent)
-	: QAbstractItemModel(parent), snapshot(new Snapshot({}))
+	: QAbstractItemModel(parent), snapshot(new Snapshot({})), comparedSnapshot(new Snapshot({}))
 {
 }
 
@@ -19,6 +19,23 @@ void ItemModelSnapshot::setSnapshot(shared_ptr<Snapshot> sn) {
 	beginResetModel();
 	snapshot = sn;
 	currentSorting = { -1, false };
+	recomputeDifference();
+	endResetModel();
+}
+
+
+void ItemModelSnapshot::setComparedSnapshot(std::shared_ptr<Snapshot> sn) {
+	beginResetModel();
+	comparedSnapshot = sn;
+	recomputeDifference();
+	endResetModel();
+}
+
+
+void ItemModelSnapshot::removeComparedSnapshot() {
+	beginResetModel();
+	comparedSnapshot.reset(new Snapshot({}));
+	recomputeDifference();
 	endResetModel();
 }
 
@@ -89,6 +106,7 @@ bool ItemModelSnapshot::isColumnSortable(int column) {
 	case (int)Column::Name:
 	case (int)Column::TotSize:
 	case (int)Column::FileSize:
+	case (int)Column::DiffSize:
 		return true;
 	}
 	return false;
@@ -115,6 +133,9 @@ QVariant ItemModelSnapshot::getContents(const QModelIndex &index, int role, bool
 		if (role == Qt::ForegroundRole) {
 			if (dir->isExcluded()) return QBrush(Qt::gray);
 		}
+		if (role == Qt::BackgroundRole) {
+			if (dir->isGhost()) return QBrush(Qt::gray);
+		}
 		break;
 	case (int)Column::State:
 		if (header) return QString("state");
@@ -131,14 +152,21 @@ QVariant ItemModelSnapshot::getContents(const QModelIndex &index, int role, bool
 		if (header) return QString("total size");
 		if (role == Qt::DisplayRole) return QString::fromStdString(Snapshot::sizeToText(dir->getTotSize()));
 		if (role == Qt::ForegroundRole) {
-			if (dir->isExcluded()) return QBrush(Qt::gray);
+			if (dir->isExcluded() || dir->isGhost()) return QBrush(Qt::gray);
 		}
 		break;
 	case (int)Column::FileSize:
 		if (header) return QString("file size");
 		if (role == Qt::DisplayRole) return QString::fromStdString(Snapshot::sizeToText(dir->getFileSize()));
 		if (role == Qt::ForegroundRole) {
-			if (dir->isExcluded()) return QBrush(Qt::gray);
+			if (dir->isExcluded() || dir->isGhost()) return QBrush(Qt::gray);
+		}
+		break;
+	case (int)Column::DiffSize:
+		if (header) return QString("diff size");
+		if (role == Qt::DisplayRole) return QString::fromStdString(Snapshot::relSizeToText(dir->getDiffSize()));
+		if (role == Qt::ForegroundRole) {
+			if (comparedSnapshot->isEmpty()) return QBrush(Qt::gray);
 		}
 		break;
 	}
@@ -177,6 +205,19 @@ void ItemModelSnapshot::sortSnapshot(int column, bool desc)
 		snapshot->sortSubDirs([desc](const Directory *a, const Directory *b){
 			return desc ? a->getFileSize() > b->getFileSize() :  a->getFileSize() < b->getFileSize(); });
 		break;
+	case (int)Column::DiffSize:
+		snapshot->sortSubDirs([desc](const Directory *a, const Directory *b){
+			return desc ? a->getDiffSize() > b->getDiffSize() :  a->getDiffSize() < b->getDiffSize(); });
+		break;
 	}
 	endResetModel();
 }
+
+
+void ItemModelSnapshot::recomputeDifference() {
+	if (snapshot->isEmpty()) return;
+	currentSorting = { -1, false };  // sorting will be no more defined
+	snapshot->recomputeDifference(comparedSnapshot.get());
+}
+
+

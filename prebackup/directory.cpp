@@ -27,6 +27,7 @@ void Directory::clear() {
 
 void Directory::scan(string const &parentPath) {
 	clear();
+	if (ghost) return;
 	string dirFullPath = parentPath.size() ? ( parentPath + "/" + name) : name;
 	DIR *d = opendir(dirFullPath.c_str());
 	if (!d) {

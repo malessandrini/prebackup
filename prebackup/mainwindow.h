@@ -7,6 +7,7 @@
 #include <utility>
 
 
+class Snapshot;
 class ItemModelSnapshot;
 class QTreeView;
 class QLabel;
@@ -19,20 +20,24 @@ public:
 
 private:
 	std::pair<int, Qt::SortOrder> currentSorting;
-	QAction *actionRoots, *actionScan, *actionScanRoot, *actionOpen, *actionSave;
+	QAction *actionRoots, *actionScan, *actionScanRoot, *actionOpen, *actionSave, *actionCompareOpen, *actionCompareClose;
 	QTreeView *treeView;
 	ItemModelSnapshot *snapshotModel;
-	QLabel *labelSnapDate, *labelSnapSize, *labelSnapCompareDate, *labelSnapCompareSize;
+	QLabel *labelSnapDate, *labelSnapSize, *labelSnapDiff, *labelSnapCompareDate, *labelSnapCompareSize;
 	QString savePath;
 	static const QString fileDateFormat;
 	void updateGui();
+	bool checkDataSaved();
 	void closeEvent(QCloseEvent*) override;
+	std::shared_ptr<Snapshot> loadSnapshot();
 
 private slots:
 	void sortIndicatorChanged(int, Qt::SortOrder);
 	void scanNew();
 	void snapshotOpen();
 	bool snapshotSave();
+	void compareOpen();
+	void compareClose();
 };
 
 
