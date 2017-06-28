@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT += core gui widgets
-CONFIG += debug c++11
+CONFIG += release c++11
 
 TARGET = prebackup
 TEMPLATE = app

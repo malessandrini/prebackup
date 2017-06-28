@@ -1,3 +1,21 @@
+/*
+Prebackup
+Copyright (C) 2017  Michele Alessandrini
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 3
+as published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
 #include "itemModelSnapshot.h"
 #include "snapshot.h"
 #include "directory.h"
@@ -104,8 +122,8 @@ int ItemModelSnapshot::columnCount(const QModelIndex &) const
 bool ItemModelSnapshot::isColumnSortable(int column) {
 	switch(column) {
 	case (int)Column::Name:
-	case (int)Column::TotSize:
 	case (int)Column::FileSize:
+	case (int)Column::TotSize:
 	case (int)Column::DiffSize:
 		return true;
 	}
@@ -148,16 +166,16 @@ QVariant ItemModelSnapshot::getContents(const QModelIndex &index, int role, bool
 			if (dir->isExcluded()) return QString("Excluded");
 		}
 		break;
-	case (int)Column::TotSize:
-		if (header) return QString("total size");
-		if (role == Qt::DisplayRole) return QString::fromStdString(Snapshot::sizeToText(dir->getTotSize()));
+	case (int)Column::FileSize:
+		if (header) return QString("file size");
+		if (role == Qt::DisplayRole) return QString::fromStdString(Snapshot::sizeToText(dir->getFileSize()));
 		if (role == Qt::ForegroundRole) {
 			if (dir->isExcluded() || dir->isGhost()) return QBrush(Qt::gray);
 		}
 		break;
-	case (int)Column::FileSize:
-		if (header) return QString("file size");
-		if (role == Qt::DisplayRole) return QString::fromStdString(Snapshot::sizeToText(dir->getFileSize()));
+	case (int)Column::TotSize:
+		if (header) return QString("total size");
+		if (role == Qt::DisplayRole) return QString::fromStdString(Snapshot::sizeToText(dir->getTotSize()));
 		if (role == Qt::ForegroundRole) {
 			if (dir->isExcluded() || dir->isGhost()) return QBrush(Qt::gray);
 		}
@@ -197,13 +215,13 @@ void ItemModelSnapshot::sortSnapshot(int column, bool desc)
 		snapshot->sortSubDirs([desc](const Directory *a, const Directory *b){
 			return desc ? a->getName() > b->getName() :  a->getName() < b->getName(); });
 		break;
-	case (int)Column::TotSize:
-		snapshot->sortSubDirs([desc](const Directory *a, const Directory *b){
-			return desc ? a->getTotSize() > b->getTotSize() :  a->getTotSize() < b->getTotSize(); });
-		break;
 	case (int)Column::FileSize:
 		snapshot->sortSubDirs([desc](const Directory *a, const Directory *b){
 			return desc ? a->getFileSize() > b->getFileSize() :  a->getFileSize() < b->getFileSize(); });
+		break;
+	case (int)Column::TotSize:
+		snapshot->sortSubDirs([desc](const Directory *a, const Directory *b){
+			return desc ? a->getTotSize() > b->getTotSize() :  a->getTotSize() < b->getTotSize(); });
 		break;
 	case (int)Column::DiffSize:
 		snapshot->sortSubDirs([desc](const Directory *a, const Directory *b){

@@ -1,3 +1,21 @@
+/*
+Prebackup
+Copyright (C) 2017  Michele Alessandrini
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 3
+as published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
 #include "mainwindow.h"
 #include "itemModelSnapshot.h"
 #include "snapshot.h"
@@ -25,8 +43,11 @@ using namespace std;
 
 
 
+// date format used as file name for saved snapshots
 const QString MainWindow::fileDateFormat("yyyy-MM-dd-HH-mm-ss");
 
+// date format used in GUI
+const Qt::DateFormat MainWindow::userDateFormat = Qt::DefaultLocaleShortDate;
 
 
 // helper class to temporarily change cursor to hourglass
@@ -79,7 +100,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	actionRoots->setStatusTip("Select which directories to scan");
 	actionScan = menuSnapshot->addAction(QIcon(), "Scan &new snapshot...", this, &MainWindow::scanNew);
 	actionScan->setStatusTip("Scan a new snapshot");
-	actionScanRoot = menuSnapshot->addAction(QIcon(), "Scan new snapshot as &root...", this, &MainWindow::scanNew);  // TODO
+	actionScanRoot = menuSnapshot->addAction(QIcon(), "Scan new snapshot as &root...", this, &MainWindow::scanNew);
 	menuSnapshot->addSeparator();
 	actionOpen = menuSnapshot->addAction(QIcon::fromTheme("document-open"), "&Open snapshot...",
 		this, &MainWindow::snapshotOpen, QKeySequence::Open);
@@ -119,7 +140,7 @@ void MainWindow::updateGui() {
 
 	labelSnapDate->setText("Date: " +
 		(snapshotModel->getSnapshot()->isEmpty() ? "-" :
-		QDateTime::fromMSecsSinceEpoch(snapshotModel->getSnapshot()->getTimestamp() * qint64(1000)).toString(fileDateFormat)));
+		QDateTime::fromMSecsSinceEpoch(snapshotModel->getSnapshot()->getTimestamp() * qint64(1000)).toString(userDateFormat)));
 	labelSnapSize->setText("Size: " +
 		(snapshotModel->getSnapshot()->isEmpty() ? "-" :
 		QString::fromStdString(Snapshot::sizeToText(snapshotModel->getSnapshot()->getTotSize()))));
@@ -131,7 +152,7 @@ void MainWindow::updateGui() {
 
 	labelSnapCompareDate->setText("Date: " +
 		(snapshotModel->getComparedSnapshot()->isEmpty() ? "-" :
-		QDateTime::fromMSecsSinceEpoch(snapshotModel->getComparedSnapshot()->getTimestamp() * qint64(1000)).toString(fileDateFormat)));
+		QDateTime::fromMSecsSinceEpoch(snapshotModel->getComparedSnapshot()->getTimestamp() * qint64(1000)).toString(userDateFormat)));
 	labelSnapCompareSize->setText("Size: " +
 		(snapshotModel->getComparedSnapshot()->isEmpty() ? "-" :
 		QString::fromStdString(Snapshot::sizeToText(snapshotModel->getComparedSnapshot()->getTotSize()))));
@@ -180,20 +201,24 @@ shared_ptr<Snapshot> MainWindow::loadSnapshot() {
 	d.setFilter(QDir::Files);
 	d.setNameFilters(QStringList() << "*.snapshot");
 	d.setSorting(QDir::Name | QDir::Reversed);
-	QStringList tmpList = d.entryList(), snapList;
+	QStringList tmpList = d.entryList(), userList;
+	std::map<QString, QString> nameMap;  // from user-friendly date to file name
 	for (auto f: tmpList) {
 		QString name = QFileInfo(f).baseName();
-		if (QDateTime::fromString(name, fileDateFormat).isValid())
-			snapList << name;
+		QDateTime dt = QDateTime::fromString(name, fileDateFormat);
+		if (dt.isValid()) {
+			userList << dt.toString(userDateFormat);
+			nameMap[dt.toString(userDateFormat)] = name;
+		}
 	}
-	if (snapList.empty()) {
+	if (userList.empty()) {
 		QMessageBox::critical(this, "No snapshots", "No saved snapshots found");
 		return result;
 	}
 	bool ok;
-	QString fileName = QInputDialog::getItem(this, "Open snapshot", "Select snapshot to open:", snapList, 0, false, &ok);
+	QString fileName = QInputDialog::getItem(this, "Open snapshot", "Select snapshot to open:", userList, 0, false, &ok);
 	if (!ok || fileName.isEmpty()) return result;
-	fileName = QDir(savePath).absoluteFilePath(fileName + ".snapshot");
+	fileName = QDir(savePath).absoluteFilePath(nameMap[fileName] + ".snapshot");
 	try {
 		WaitCursor _;
 		result.reset(Snapshot::load(fileName.toStdString()));
