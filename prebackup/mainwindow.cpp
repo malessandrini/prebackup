@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "itemModelSnapshot.h"
 #include "snapshot.h"
 #include "dialogRoots.h"
+#include "dialogListChoose.h"
 #include <QSettings>
 #include <QDebug>
 #include <vector>
@@ -35,7 +36,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QFileInfo>
 #include <QDir>
 #include <QDateTime>
-#include <QInputDialog>
 #include <QCloseEvent>
 #include <QLabel>
 #include <QGroupBox>
@@ -215,9 +215,10 @@ shared_ptr<Snapshot> MainWindow::loadSnapshot() {
 		QMessageBox::critical(this, "No snapshots", "No saved snapshots found");
 		return result;
 	}
-	bool ok;
-	QString fileName = QInputDialog::getItem(this, "Open snapshot", "Select snapshot to open:", userList, 0, false, &ok);
-	if (!ok || fileName.isEmpty()) return result;
+	DialogListChoose dlg(this, "Open snapshot", "Select snapshot to open:", userList);
+	if (dlg.exec() != QDialog::Accepted) return result;
+	QString fileName = dlg.result;
+
 	fileName = QDir(savePath).absoluteFilePath(nameMap[fileName] + ".snapshot");
 	try {
 		WaitCursor _;

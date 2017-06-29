@@ -17,13 +17,15 @@ SOURCES += main.cpp\
 	directory.cpp \
 	snapshot.cpp \
 	itemModelSnapshot.cpp \
-	dialogRoots.cpp
+	dialogRoots.cpp \
+	dialogListChoose.cpp
 
 HEADERS  += mainwindow.h \
 	directory.h \
 	snapshot.h \
 	itemModelSnapshot.h \
-	dialogRoots.h
+	dialogRoots.h \
+	dialogListChoose.h
 
 LIBS += -lsqlite3
 
