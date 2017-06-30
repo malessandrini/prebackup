@@ -38,7 +38,8 @@ public:
 
 private:
 	std::pair<int, Qt::SortOrder> currentSorting;
-	QAction *actionRoots, *actionScan, *actionScanRoot, *actionOpen, *actionSave, *actionCompareOpen, *actionCompareClose;
+	QAction *actionRoots, *actionScan, *actionScanRoot, *actionOpen, *actionSave,
+		*actionCompareOpen, *actionCompareClose, *actionOutputExclusion;
 	QTreeView *treeView;
 	ItemModelSnapshot *snapshotModel;
 	QLabel *labelSnapDate, *labelSnapSize, *labelSnapDiff, *labelSnapCompareDate, *labelSnapCompareSize;
@@ -57,6 +58,7 @@ private slots:
 	bool snapshotSave();
 	void compareOpen();
 	void compareClose();
+	void outputExclusion();
 };
 
 

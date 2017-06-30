@@ -100,7 +100,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	actionRoots->setStatusTip("Select which directories to scan");
 	actionScan = menuSnapshot->addAction(QIcon(), "Scan &new snapshot...", this, &MainWindow::scanNew);
 	actionScan->setStatusTip("Scan a new snapshot");
-	actionScanRoot = menuSnapshot->addAction(QIcon(), "Scan new snapshot as &root...", this, &MainWindow::scanNew);
+//	actionScanRoot = menuSnapshot->addAction(QIcon(), "Scan new snapshot as &root...", this, &MainWindow::scanNewAsRoot);  // TODO
 	menuSnapshot->addSeparator();
 	actionOpen = menuSnapshot->addAction(QIcon::fromTheme("document-open"), "&Open snapshot...",
 		this, &MainWindow::snapshotOpen, QKeySequence::Open);
@@ -116,6 +116,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	actionCompareClose = menuCompare->addAction(QIcon::fromTheme("document-close"), "&Close comparison snapshot",
 		this, &MainWindow::compareClose);
 	actionCompareClose->setStatusTip("Close comparison snapshot");
+
+	QMenu *menuOutput = menuBar()->addMenu("&Output");
+	actionOutputExclusion = menuOutput->addAction(QIcon(), "&Exclusion list...", this, &MainWindow::outputExclusion);
+	actionOutputExclusion->setStatusTip("Generate list of excluded directories");
 
 	snapshotModel = new ItemModelSnapshot(this);
 	treeView->setModel(snapshotModel);
@@ -137,6 +141,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::updateGui() {
 	actionSave->setEnabled(!snapshotModel->getSnapshot()->isSaved());
+	actionCompareClose->setEnabled(!snapshotModel->getComparedSnapshot()->isEmpty());
+	actionOutputExclusion->setEnabled(!snapshotModel->getSnapshot()->isEmpty());
 
 	labelSnapDate->setText("Date: " +
 		(snapshotModel->getSnapshot()->isEmpty() ? "-" :
@@ -274,6 +280,10 @@ void MainWindow::compareClose() {
 	snapshotModel->removeComparedSnapshot();
 	sortIndicatorChanged(currentSorting.first, currentSorting.second);  // make snapshot sort
 	updateGui();
+}
+
+
+void MainWindow::outputExclusion() {
 }
 
 
