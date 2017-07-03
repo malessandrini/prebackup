@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include <QMainWindow>
+#include <QStringList>
 #include <memory>
 #include <utility>
 
@@ -29,6 +30,7 @@ class Snapshot;
 class ItemModelSnapshot;
 class QTreeView;
 class QLabel;
+class Directory;
 
 
 class MainWindow : public QMainWindow {
@@ -50,6 +52,7 @@ private:
 	bool checkDataSaved();
 	void closeEvent(QCloseEvent*) override;
 	std::shared_ptr<Snapshot> loadSnapshot();
+	QStringList getExcludedDirs(QString parentPath, const Directory*) const;
 
 private slots:
 	void sortIndicatorChanged(int, Qt::SortOrder);

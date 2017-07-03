@@ -284,6 +284,21 @@ void MainWindow::compareClose() {
 
 
 void MainWindow::outputExclusion() {
+	QStringList excluded;
+	for (auto i = snapshotModel->getSnapshot()->cbegin(); i != snapshotModel->getSnapshot()->cend(); ++i)
+		excluded << getExcludedDirs("", *i);
+	// TODO
+}
+
+
+QStringList MainWindow::getExcludedDirs(QString parentPath, const Directory *dir) const {
+	QString fullPath = parentPath.size() ? (parentPath + "/" + QString::fromStdString(dir->getName()))
+		: QString::fromStdString(dir->getName());
+	QStringList result;
+	if (dir->isExcluded()) return result << fullPath;
+	for (auto i = dir->cbegin(); i != dir->cend(); ++i)
+		result << getExcludedDirs(fullPath, *i);
+	return result;
 }
 
 
