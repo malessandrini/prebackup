@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "snapshot.h"
 #include "dialogRoots.h"
 #include "dialogListChoose.h"
+#include "dialogOuputFile.h"
 #include <QSettings>
 #include <QDebug>
 #include <vector>
@@ -120,6 +121,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	QMenu *menuOutput = menuBar()->addMenu("&Output");
 	actionOutputExclusion = menuOutput->addAction(QIcon(), "&Exclusion list...", this, &MainWindow::outputExclusion);
 	actionOutputExclusion->setStatusTip("Generate list of excluded directories");
+
+	QMenu *menuHelp = menuBar()->addMenu("&Help");
+	actionHelpDoc = menuHelp->addAction(QIcon(), "&Documentation...", [](){});  // TODO
+	actionHelpAbout = menuHelp->addAction(QIcon(), "&About...", [](){});  // TODO
 
 	snapshotModel = new ItemModelSnapshot(this);
 	treeView->setModel(snapshotModel);
@@ -287,7 +292,7 @@ void MainWindow::outputExclusion() {
 	QStringList excluded;
 	for (auto i = snapshotModel->getSnapshot()->cbegin(); i != snapshotModel->getSnapshot()->cend(); ++i)
 		excluded << getExcludedDirs("", *i);
-	// TODO
+	DialogOutputFile(this, "Excluded directories", "List of excluded directories", excluded, "TODO", "saveExcluded").exec();
 }
 
 
@@ -296,8 +301,11 @@ QStringList MainWindow::getExcludedDirs(QString parentPath, const Directory *dir
 		: QString::fromStdString(dir->getName());
 	QStringList result;
 	if (dir->isExcluded()) return result << fullPath;
-	for (auto i = dir->cbegin(); i != dir->cend(); ++i)
-		result << getExcludedDirs(fullPath, *i);
+	{
+		WaitCursor _;
+		for (auto i = dir->cbegin(); i != dir->cend(); ++i)
+			result << getExcludedDirs(fullPath, *i);
+	}
 	return result;
 }
 

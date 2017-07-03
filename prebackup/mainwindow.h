@@ -41,7 +41,8 @@ public:
 private:
 	std::pair<int, Qt::SortOrder> currentSorting;
 	QAction *actionRoots, *actionScan, *actionScanRoot, *actionOpen, *actionSave,
-		*actionCompareOpen, *actionCompareClose, *actionOutputExclusion;
+		*actionCompareOpen, *actionCompareClose, *actionOutputExclusion,
+		*actionHelpDoc, *actionHelpAbout;
 	QTreeView *treeView;
 	ItemModelSnapshot *snapshotModel;
 	QLabel *labelSnapDate, *labelSnapSize, *labelSnapDiff, *labelSnapCompareDate, *labelSnapCompareSize;
