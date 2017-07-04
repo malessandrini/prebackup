@@ -27,10 +27,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QFileDialog>
 
 
-DialogRoots::DialogRoots(QWidget *parent):
+DialogRoots::DialogRoots(QWidget *parent, QString const &title):
 	QDialog(parent)
 {
-	setWindowTitle("Root directories");
+	setWindowTitle(title);
 	auto *lay1 = new QVBoxLayout(this);
 	auto *lay2 = new QHBoxLayout;
 	lay1->addLayout(lay2, 1);
@@ -42,10 +42,10 @@ DialogRoots::DialogRoots(QWidget *parent):
 	toolBar->setMovable(false);
 	toolBar->setFloatable(false);
 	lay2->addWidget(toolBar);
-	actionAdd = toolBar->addAction(QIcon(":/res/List-add.png"), "Add", this, &DialogRoots::itemAdd);
-	actionDelete = toolBar->addAction(QIcon(":/res/List-remove.png"), "Delete", this, &DialogRoots::itemDelete);
-	actionUp = toolBar->addAction(QIcon(":/res/Go-up.png"), "Move up", this, &DialogRoots::itemUp);
-	actionDown = toolBar->addAction(QIcon(":/res/Go-down.png"), "Move down", this, &DialogRoots::itemDown);
+	actionAdd = toolBar->addAction(QIcon(":/res/List-add.png"), tr("Add"), this, &DialogRoots::itemAdd);
+	actionDelete = toolBar->addAction(QIcon(":/res/List-remove.png"), tr("Delete"), this, &DialogRoots::itemDelete);
+	actionUp = toolBar->addAction(QIcon(":/res/Go-up.png"), tr("Move up"), this, &DialogRoots::itemUp);
+	actionDown = toolBar->addAction(QIcon(":/res/Go-down.png"), tr("Move down"), this, &DialogRoots::itemDown);
 	auto *bbox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
 		Qt::Horizontal, this);
 	lay1->addWidget(bbox);

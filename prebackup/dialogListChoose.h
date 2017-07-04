@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QDialog>
 
 class QListWidget;
+class QListWidgetItem;
 class QDialogButtonBox;
 
 
@@ -30,12 +31,14 @@ class DialogListChoose : public QDialog {
 	Q_OBJECT
 public:
 	DialogListChoose(QWidget *parent, QString const &title, QString const &label, QStringList const &items);
-	QString result;
+	QString getResult() const { return result; }
 private:
 	QListWidget *list;
 	QDialogButtonBox *bbox;
+	QString result;
 private slots:
 	void selectionChanged();
+	void doubleClicked(QListWidgetItem*);
 };
 
 

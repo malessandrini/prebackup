@@ -145,7 +145,7 @@ QVariant ItemModelSnapshot::getContents(const QModelIndex &index, int role, bool
 
 	switch (index.column()) {
 	case (int)Column::Name:
-		if (header) return QString("directory");
+		if (header) return tr("directory");
 		if (role == Qt::DisplayRole) return QString::fromStdString(dir->getName());
 		if (role == Qt::DecorationRole) return QIcon::fromTheme("folder", QIcon(":/res/Folder.png"));
 		if (role == Qt::ForegroundRole) {
@@ -156,32 +156,32 @@ QVariant ItemModelSnapshot::getContents(const QModelIndex &index, int role, bool
 		}
 		break;
 	case (int)Column::State:
-		if (header) return QString("state");
+		if (header) return tr("state");
 		if (role == Qt::DecorationRole) {
 			if (dir->hasErrors()) return QIcon::fromTheme("dialog-warning", QIcon(":/res/Dialog-warning.png"));
 			if (dir->isExcluded()) return QIcon::fromTheme("edit-delete", QIcon(":/res/Edit-delete.png"));
 		}
 		if (role == Qt::ToolTipRole) {
-			if (dir->hasErrors()) return QString("Read errors");
-			if (dir->isExcluded()) return QString("Excluded");
+			if (dir->hasErrors()) return tr("Read errors");
+			if (dir->isExcluded()) return tr("Excluded");
 		}
 		break;
 	case (int)Column::FileSize:
-		if (header) return QString("file size");
+		if (header) return tr("file size");
 		if (role == Qt::DisplayRole) return QString::fromStdString(Snapshot::sizeToText(dir->getFileSize()));
 		if (role == Qt::ForegroundRole) {
 			if (dir->isExcluded() || dir->isGhost()) return QBrush(Qt::gray);
 		}
 		break;
 	case (int)Column::TotSize:
-		if (header) return QString("total size");
+		if (header) return tr("total size");
 		if (role == Qt::DisplayRole) return QString::fromStdString(Snapshot::sizeToText(dir->getTotSize()));
 		if (role == Qt::ForegroundRole) {
 			if (dir->isExcluded() || dir->isGhost()) return QBrush(Qt::gray);
 		}
 		break;
 	case (int)Column::DiffSize:
-		if (header) return QString("diff size");
+		if (header) return tr("diff size");
 		if (role == Qt::DisplayRole) return QString::fromStdString(Snapshot::relSizeToText(dir->getDiffSize()));
 		if (role == Qt::ForegroundRole) {
 			if (comparedSnapshot->isEmpty()) return QBrush(Qt::gray);

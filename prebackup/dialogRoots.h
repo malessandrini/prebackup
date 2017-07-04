@@ -29,7 +29,7 @@ class QAction;
 class DialogRoots : public QDialog {
 	Q_OBJECT
 public:
-	DialogRoots(QWidget *parent);
+	DialogRoots(QWidget *parent, QString const &title);
 private:
 	QListWidget *listRoots;
 	QAction *actionAdd, *actionDelete, *actionUp, *actionDown;

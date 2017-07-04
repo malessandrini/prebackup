@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace std;
 
 
-runtime_error Snapshot::saveError("Unable to save file");
+const runtime_error Snapshot::saveError("snapshot save error"), Snapshot::loadError("snapshot load error");
 
 
 Snapshot::Snapshot(vector<string> const &roots):
@@ -140,7 +140,6 @@ void Snapshot::saveRecur(InsertData &ins, uint32_t parentId, std::vector<Directo
 
 Snapshot * Snapshot::load(string const &file) {
 	unique_ptr<Snapshot> snap(new Snapshot({}));  // delete object automatically in case of exception
-	runtime_error loadError("Unable to load file");
 	sqlite3 *db;
 	int r = sqlite3_open_v2(file.c_str(), &db, SQLITE_OPEN_READONLY, nullptr);
 	shared_ptr<sqlite3> finalizeDb(db, sqlite3_close);  // free object automatically

@@ -67,7 +67,7 @@ private:
 
 	// data and functions for sqlite db read/write
 	static void doQuery(sqlite3*, const char*);  // throws
-	static std::runtime_error saveError;
+	static const std::runtime_error saveError, loadError;
 	struct InsertData {
 		sqlite3_stmt *query;
 		uint32_t id;

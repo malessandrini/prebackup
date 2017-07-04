@@ -40,6 +40,7 @@ DialogListChoose::DialogListChoose(QWidget *parent, const QString &title, const 
 	connect(bbox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 	list->addItems(items);
 	connect(list, &QListWidget::itemSelectionChanged, this, &DialogListChoose::selectionChanged);
+	connect(list, &QListWidget::itemDoubleClicked, this, &DialogListChoose::doubleClicked);
 	selectionChanged();
 }
 
@@ -48,4 +49,10 @@ void DialogListChoose::selectionChanged() {
 	bool ok = list->selectedItems().size() == 1;
 	bbox->button(QDialogButtonBox::Ok)->setEnabled(ok);
 	result = ok ? list->selectedItems()[0]->text() : QString();
+}
+
+
+void DialogListChoose::doubleClicked(QListWidgetItem *item) {
+	result = item->text();
+	accept();
 }

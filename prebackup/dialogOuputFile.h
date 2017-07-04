@@ -34,6 +34,7 @@ public:
 private:
 	QPlainTextEdit *textBox;
 	QDialogButtonBox *bbox;
+	const QString settingName;
 private slots:
 	void saveFile();
 };

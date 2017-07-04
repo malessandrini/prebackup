@@ -50,6 +50,7 @@ const QString MainWindow::fileDateFormat("yyyy-MM-dd-HH-mm-ss");
 // date format used in GUI
 const Qt::DateFormat MainWindow::userDateFormat = Qt::DefaultLocaleShortDate;
 
+const QString MainWindow::rootDirTitle = tr("Root directories");
 
 // helper class to temporarily change cursor to hourglass
 class WaitCursor {
@@ -71,7 +72,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	verticalLayout->setContentsMargins(8, 8, 8, 8);
 	auto *laySummary = new QHBoxLayout;
 	verticalLayout->addLayout(laySummary);
-	auto *gb = new QGroupBox("Current snapshot", this);
+	auto *gb = new QGroupBox(tr("Current snapshot"), this);
 	laySummary->addWidget(gb);
 	auto *laygb = new QVBoxLayout(gb);
 	labelSnapDate = new QLabel(gb);
@@ -81,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	laygb->addWidget(labelSnapSize);
 	laygb->addWidget(labelSnapDiff);
 	laygb->addStretch();  // align labels at top
-	auto *gb2 = new QGroupBox("Comparing snapshot", this);
+	auto *gb2 = new QGroupBox(tr("Comparing snapshot"), this);
 	laySummary->addWidget(gb2);
 	auto *laygb2 = new QVBoxLayout(gb2);
 	labelSnapCompareDate = new QLabel(gb2);
@@ -96,35 +97,36 @@ MainWindow::MainWindow(QWidget *parent) :
 	setCentralWidget(centralWidget);
 	statusBar();
 
-	QMenu *menuSnapshot = menuBar()->addMenu("&Snapshot");
-	actionRoots = menuSnapshot->addAction(QIcon(), "Select &main directories...", [this](){ DialogRoots(this).exec(); });
-	actionRoots->setStatusTip("Select which directories to scan");
-	actionScan = menuSnapshot->addAction(QIcon(), "Scan &new snapshot...", this, &MainWindow::scanNew);
-	actionScan->setStatusTip("Scan a new snapshot");
-//	actionScanRoot = menuSnapshot->addAction(QIcon(), "Scan new snapshot as &root...", this, &MainWindow::scanNewAsRoot);  // TODO
+	QMenu *menuSnapshot = menuBar()->addMenu(tr("&Snapshot"));
+	actionRoots = menuSnapshot->addAction(QIcon(), tr("Select &main directories..."),
+		[this](){ DialogRoots(this, rootDirTitle).exec(); });
+	actionRoots->setStatusTip(tr("Select which directories to scan"));
+	actionScan = menuSnapshot->addAction(QIcon(), tr("Scan &new snapshot..."), this, &MainWindow::scanNew);
+	actionScan->setStatusTip(tr("Scan a new snapshot"));
+//	actionScanRoot = menuSnapshot->addAction(QIcon(), tr("Scan new snapshot as &root..."), this, &MainWindow::scanNewAsRoot);  // TODO
 	menuSnapshot->addSeparator();
-	actionOpen = menuSnapshot->addAction(QIcon::fromTheme("document-open"), "&Open snapshot...",
+	actionOpen = menuSnapshot->addAction(QIcon::fromTheme("document-open"), tr("&Open snapshot..."),
 		this, &MainWindow::snapshotOpen, QKeySequence::Open);
-	actionOpen->setStatusTip("Open a previously saved snapshot");
-	actionSave = menuSnapshot->addAction(QIcon::fromTheme("document-save"), "&Save snapshot...",
+	actionOpen->setStatusTip(tr("Open a previously saved snapshot"));
+	actionSave = menuSnapshot->addAction(QIcon::fromTheme("document-save"), tr("&Save snapshot..."),
 		this, &MainWindow::snapshotSave, QKeySequence::Save);
-	actionSave->setStatusTip("Save the current snapshot");
+	actionSave->setStatusTip(tr("Save the current snapshot"));
 
-	QMenu *menuCompare = menuBar()->addMenu("&Compare");
-	actionCompareOpen = menuCompare->addAction(QIcon::fromTheme("document-open"), "&Open snapshot for comparison...",
+	QMenu *menuCompare = menuBar()->addMenu(tr("&Compare"));
+	actionCompareOpen = menuCompare->addAction(QIcon::fromTheme("document-open"), tr("&Open snapshot for comparison..."),
 		this, &MainWindow::compareOpen);
-	actionCompareOpen->setStatusTip("Open an existing snapshot for comparison");
-	actionCompareClose = menuCompare->addAction(QIcon::fromTheme("document-close"), "&Close comparison snapshot",
+	actionCompareOpen->setStatusTip(tr("Open an existing snapshot for comparison"));
+	actionCompareClose = menuCompare->addAction(QIcon::fromTheme("document-close"), tr("&Close comparison snapshot"),
 		this, &MainWindow::compareClose);
-	actionCompareClose->setStatusTip("Close comparison snapshot");
+	actionCompareClose->setStatusTip(tr("Close comparison snapshot"));
 
-	QMenu *menuOutput = menuBar()->addMenu("&Output");
-	actionOutputExclusion = menuOutput->addAction(QIcon(), "&Exclusion list...", this, &MainWindow::outputExclusion);
-	actionOutputExclusion->setStatusTip("Generate list of excluded directories");
+	QMenu *menuOutput = menuBar()->addMenu(tr("&Output"));
+	actionOutputExclusion = menuOutput->addAction(QIcon(), tr("&Exclusion list..."), this, &MainWindow::outputExclusion);
+	actionOutputExclusion->setStatusTip(tr("Generate list of excluded directories"));
 
-	QMenu *menuHelp = menuBar()->addMenu("&Help");
-	actionHelpDoc = menuHelp->addAction(QIcon(), "&Documentation...", [](){});  // TODO
-	actionHelpAbout = menuHelp->addAction(QIcon(), "&About...", [](){});  // TODO
+	QMenu *menuHelp = menuBar()->addMenu(tr("&Help"));
+	actionHelpDoc = menuHelp->addAction(QIcon::fromTheme("help-contents"), tr("&Documentation..."), [](){});  // TODO
+	actionHelpAbout = menuHelp->addAction(QIcon::fromTheme("help-about"), tr("&About..."), [](){});  // TODO
 
 	snapshotModel = new ItemModelSnapshot(this);
 	treeView->setModel(snapshotModel);
@@ -149,22 +151,22 @@ void MainWindow::updateGui() {
 	actionCompareClose->setEnabled(!snapshotModel->getComparedSnapshot()->isEmpty());
 	actionOutputExclusion->setEnabled(!snapshotModel->getSnapshot()->isEmpty());
 
-	labelSnapDate->setText("Date: " +
+	labelSnapDate->setText(tr("Date: ") +
 		(snapshotModel->getSnapshot()->isEmpty() ? "-" :
 		QDateTime::fromMSecsSinceEpoch(snapshotModel->getSnapshot()->getTimestamp() * qint64(1000)).toString(userDateFormat)));
-	labelSnapSize->setText("Size: " +
+	labelSnapSize->setText(tr("Size: ") +
 		(snapshotModel->getSnapshot()->isEmpty() ? "-" :
 		QString::fromStdString(Snapshot::sizeToText(snapshotModel->getSnapshot()->getTotSize()))));
-	labelSnapDiff->setText("Difference: " +
+	labelSnapDiff->setText(tr("Difference: ") +
 		(snapshotModel->getComparedSnapshot()->isEmpty() ? "-" :
 		QString::fromStdString(Snapshot::relSizeToText(
 			(int64_t)snapshotModel->getSnapshot()->getTotSize() - (int64_t)snapshotModel->getComparedSnapshot()->getTotSize()
 		))));
 
-	labelSnapCompareDate->setText("Date: " +
+	labelSnapCompareDate->setText(tr("Date: ") +
 		(snapshotModel->getComparedSnapshot()->isEmpty() ? "-" :
 		QDateTime::fromMSecsSinceEpoch(snapshotModel->getComparedSnapshot()->getTimestamp() * qint64(1000)).toString(userDateFormat)));
-	labelSnapCompareSize->setText("Size: " +
+	labelSnapCompareSize->setText(tr("Size: ") +
 		(snapshotModel->getComparedSnapshot()->isEmpty() ? "-" :
 		QString::fromStdString(Snapshot::sizeToText(snapshotModel->getComparedSnapshot()->getTotSize()))));
 }
@@ -172,7 +174,7 @@ void MainWindow::updateGui() {
 
 bool MainWindow::checkDataSaved() {
 	if (snapshotModel->getSnapshot()->isSaved()) return true;
-	auto reply = QMessageBox::question(this, "Save snapshot", "Save current snapshot?",
+	auto reply = QMessageBox::question(this, tr("Save snapshot"), tr("Save current snapshot?"),
 		QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes);
 	if (reply == QMessageBox::No) return true;
 	else if (reply == QMessageBox::Yes) return snapshotSave();
@@ -189,8 +191,8 @@ void MainWindow::scanNew() {
 	if (!checkDataSaved()) return;
 	auto roots = QSettings().value("roots").toStringList();
 	if (!roots.size()) {
-		QMessageBox::critical(this, "No directories", "You must add one or more main directories first.");
-		DialogRoots d(this);
+		QMessageBox::critical(this, tr("No directories"), tr("You must add one or more main directories first."));
+		DialogRoots d(this, rootDirTitle);
 		if (d.exec() != QDialog::Accepted) return;
 		roots = QSettings().value("roots").toStringList();
 		if (!roots.size()) return;
@@ -223,12 +225,12 @@ shared_ptr<Snapshot> MainWindow::loadSnapshot() {
 		}
 	}
 	if (userList.empty()) {
-		QMessageBox::critical(this, "No snapshots", "No saved snapshots found");
+		QMessageBox::critical(this, tr("No snapshots"), tr("No saved snapshots found"));
 		return result;
 	}
-	DialogListChoose dlg(this, "Open snapshot", "Select snapshot to open:", userList);
+	DialogListChoose dlg(this, tr("Open snapshot"), tr("Select snapshot to open:"), userList);
 	if (dlg.exec() != QDialog::Accepted) return result;
-	QString fileName = dlg.result;
+	QString fileName = dlg.getResult();
 
 	fileName = QDir(savePath).absoluteFilePath(nameMap[fileName] + ".snapshot");
 	try {
@@ -236,7 +238,7 @@ shared_ptr<Snapshot> MainWindow::loadSnapshot() {
 		result.reset(Snapshot::load(fileName.toStdString()));
 	}
 	catch (std::exception &) {
-		QMessageBox::critical(this, "Error", "Unable to load file!");
+		QMessageBox::critical(this, tr("Error"), tr("Unable to load file!"));
 	}
 	return result;
 }
@@ -261,10 +263,10 @@ bool MainWindow::snapshotSave() {
 		snapshotModel->getSnapshot()->save(fileName.toStdString());
 	}
 	catch (std::exception &) {
-		QMessageBox::critical(this, "Error", "Unable to save file!");
+		QMessageBox::critical(this, tr("Error"), tr("Unable to save file!"));
 		return false;
 	}
-	statusBar()->showMessage("Snapshot saved to " + fileName);
+	statusBar()->showMessage(tr("Snapshot saved to ") + fileName);
 	updateGui();
 	return true;
 }
@@ -292,7 +294,9 @@ void MainWindow::outputExclusion() {
 	QStringList excluded;
 	for (auto i = snapshotModel->getSnapshot()->cbegin(); i != snapshotModel->getSnapshot()->cend(); ++i)
 		excluded << getExcludedDirs("", *i);
-	DialogOutputFile(this, "Excluded directories", "List of excluded directories", excluded, "TODO", "saveExcluded").exec();
+	DialogOutputFile(this, tr("Excluded directories"), tr("List of excluded directories"), excluded,
+		tr("exclusion list is computed from the current snapshot, not from the actual directories"
+		" on disk. Scan a new snapshot if you have changed the excluded directories."), "saveExcluded").exec();
 }
 
 
