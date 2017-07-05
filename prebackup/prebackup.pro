@@ -29,6 +29,8 @@ HEADERS  += mainwindow.h \
 	dialogListChoose.h \
 	dialogOuputFile.h
 
+TRANSLATIONS += tran/prebackup_it.ts
+
 LIBS += -lsqlite3
 
 MOC_DIR = .moc

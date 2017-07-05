@@ -50,7 +50,6 @@ const QString MainWindow::fileDateFormat("yyyy-MM-dd-HH-mm-ss");
 // date format used in GUI
 const Qt::DateFormat MainWindow::userDateFormat = Qt::DefaultLocaleShortDate;
 
-const QString MainWindow::rootDirTitle = tr("Root directories");
 
 // helper class to temporarily change cursor to hourglass
 class WaitCursor {
@@ -99,7 +98,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	QMenu *menuSnapshot = menuBar()->addMenu(tr("&Snapshot"));
 	actionRoots = menuSnapshot->addAction(QIcon(), tr("Select &main directories..."),
-		[this](){ DialogRoots(this, rootDirTitle).exec(); });
+		[this](){ DialogRoots(this).exec(); });
 	actionRoots->setStatusTip(tr("Select which directories to scan"));
 	actionScan = menuSnapshot->addAction(QIcon(), tr("Scan &new snapshot..."), this, &MainWindow::scanNew);
 	actionScan->setStatusTip(tr("Scan a new snapshot"));
@@ -151,22 +150,22 @@ void MainWindow::updateGui() {
 	actionCompareClose->setEnabled(!snapshotModel->getComparedSnapshot()->isEmpty());
 	actionOutputExclusion->setEnabled(!snapshotModel->getSnapshot()->isEmpty());
 
-	labelSnapDate->setText(tr("Date: ") +
+	labelSnapDate->setText(tr("Date:") + " " +
 		(snapshotModel->getSnapshot()->isEmpty() ? "-" :
 		QDateTime::fromMSecsSinceEpoch(snapshotModel->getSnapshot()->getTimestamp() * qint64(1000)).toString(userDateFormat)));
-	labelSnapSize->setText(tr("Size: ") +
+	labelSnapSize->setText(tr("Size:") + " " +
 		(snapshotModel->getSnapshot()->isEmpty() ? "-" :
 		QString::fromStdString(Snapshot::sizeToText(snapshotModel->getSnapshot()->getTotSize()))));
-	labelSnapDiff->setText(tr("Difference: ") +
+	labelSnapDiff->setText(tr("Difference:") + " " +
 		(snapshotModel->getComparedSnapshot()->isEmpty() ? "-" :
 		QString::fromStdString(Snapshot::relSizeToText(
 			(int64_t)snapshotModel->getSnapshot()->getTotSize() - (int64_t)snapshotModel->getComparedSnapshot()->getTotSize()
 		))));
 
-	labelSnapCompareDate->setText(tr("Date: ") +
+	labelSnapCompareDate->setText(tr("Date:") + " " +
 		(snapshotModel->getComparedSnapshot()->isEmpty() ? "-" :
 		QDateTime::fromMSecsSinceEpoch(snapshotModel->getComparedSnapshot()->getTimestamp() * qint64(1000)).toString(userDateFormat)));
-	labelSnapCompareSize->setText(tr("Size: ") +
+	labelSnapCompareSize->setText(tr("Size:") + " " +
 		(snapshotModel->getComparedSnapshot()->isEmpty() ? "-" :
 		QString::fromStdString(Snapshot::sizeToText(snapshotModel->getComparedSnapshot()->getTotSize()))));
 }
@@ -192,7 +191,7 @@ void MainWindow::scanNew() {
 	auto roots = QSettings().value("roots").toStringList();
 	if (!roots.size()) {
 		QMessageBox::critical(this, tr("No directories"), tr("You must add one or more main directories first."));
-		DialogRoots d(this, rootDirTitle);
+		DialogRoots d(this);
 		if (d.exec() != QDialog::Accepted) return;
 		roots = QSettings().value("roots").toStringList();
 		if (!roots.size()) return;

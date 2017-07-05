@@ -47,7 +47,7 @@ private:
 	ItemModelSnapshot *snapshotModel;
 	QLabel *labelSnapDate, *labelSnapSize, *labelSnapDiff, *labelSnapCompareDate, *labelSnapCompareSize;
 	QString savePath;
-	static const QString fileDateFormat, rootDirTitle;
+	static const QString fileDateFormat;
 	static const Qt::DateFormat userDateFormat;
 	void updateGui();
 	bool checkDataSaved();

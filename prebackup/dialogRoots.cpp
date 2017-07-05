@@ -27,10 +27,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QFileDialog>
 
 
-DialogRoots::DialogRoots(QWidget *parent, QString const &title):
+DialogRoots::DialogRoots(QWidget *parent):
 	QDialog(parent)
 {
-	setWindowTitle(title);
+	setWindowTitle(tr("Root directories"));
 	auto *lay1 = new QVBoxLayout(this);
 	auto *lay2 = new QHBoxLayout;
 	lay1->addLayout(lay2, 1);

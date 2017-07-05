@@ -49,7 +49,7 @@ DialogOutputFile::DialogOutputFile(QWidget *parent, const QString &title, const 
 		QLabel *p = new QLabel(this);
 		p->setPixmap(QIcon::fromTheme("dialog-warning", QIcon(":/res/Dialog-warning.png")).pixmap(48, 48));
 		l->addWidget(p);
-		QLabel *w = new QLabel(tr("Warning: ") + warning, this);
+		QLabel *w = new QLabel(tr("Warning:") + " " + warning, this);
 		w->setWordWrap(true);
 		QFont font = w->font();
 		font.setBold(true);

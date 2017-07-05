@@ -18,9 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "mainwindow.h"
 #include <QApplication>
-#include "snapshot.h"
-#include <iostream>
-#include <memory>
+#include <QTranslator>
+#include <QLibraryInfo>
 using namespace  std;
 
 
@@ -31,6 +30,18 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	QCoreApplication::setOrganizationName("prebackup");
 	QCoreApplication::setApplicationName("prebackup");
+
+	QTranslator qtTranslator;
+	qtTranslator.load("qt_" + QLocale::system().name(),
+		QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+	a.installTranslator(&qtTranslator);
+
+	QTranslator myappTranslator;
+	myappTranslator.load("prebackup_" + QLocale::system().name(),
+			QCoreApplication::applicationDirPath() + "/../prebackup/tran")  // development
+		|| myappTranslator.load("prebackup_" + QLocale::system().name(),
+			"/usr/share/prebackup");
+	a.installTranslator(&myappTranslator);
 
 	MainWindow w;
 	w.show();
