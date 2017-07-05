@@ -190,7 +190,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="129"/>
         <source>&amp;Documentation...</source>
-        <translation>&amp;Documentaione...</translation>
+        <translation>&amp;Documentazione...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="130"/>
@@ -272,8 +272,8 @@
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="270"/>
-        <source>Snapshot saved to </source>
-        <translation>Istantanea salvata in </translation>
+        <source>Snapshot saved to</source>
+        <translation>Istantanea salvata in</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="298"/>

@@ -267,7 +267,7 @@ bool MainWindow::snapshotSave() {
 		QMessageBox::critical(this, tr("Error"), tr("Unable to save file!"));
 		return false;
 	}
-	statusBar()->showMessage(tr("Snapshot saved to ") + fileName);
+	statusBar()->showMessage(tr("Snapshot saved to") + " " + fileName);
 	updateGui();
 	return true;
 }
