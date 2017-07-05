@@ -1,11 +1,13 @@
 <RCC>
-    <qresource prefix="/">
-        <file>res/Folder.png</file>
-        <file>res/Dialog-warning.png</file>
-        <file>res/Edit-delete.png</file>
-        <file>res/Go-down.png</file>
-        <file>res/Go-up.png</file>
-        <file>res/List-add.png</file>
-        <file>res/List-remove.png</file>
-    </qresource>
+	<qresource prefix="/">
+		<file>res/Folder.png</file>
+		<file>res/Dialog-warning.png</file>
+		<file>res/Edit-delete.png</file>
+		<file>res/Go-down.png</file>
+		<file>res/Go-up.png</file>
+		<file>res/List-add.png</file>
+		<file>res/List-remove.png</file>
+		<file>res/sarxos-Simple-Folder-Seek.svg</file>
+		<file>res/sarxos-Simple-Folder-Seek.png</file>
+	</qresource>
 </RCC>

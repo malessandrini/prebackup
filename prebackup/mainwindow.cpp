@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "dialogRoots.h"
 #include "dialogListChoose.h"
 #include "dialogOuputFile.h"
+#include "version.h"
 #include <QSettings>
 #include <QDebug>
 #include <vector>
@@ -64,7 +65,8 @@ public:
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent)
 {
-	setWindowTitle("prebackup");
+	setWindowTitle("Prebackup");
+	setWindowIcon(QIcon(":/res/sarxos-Simple-Folder-Seek.png"));
 	resize(640, 480);
 	auto *centralWidget = new QWidget(this);
 	auto *verticalLayout = new QVBoxLayout(centralWidget);
@@ -125,7 +127,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	QMenu *menuHelp = menuBar()->addMenu(tr("&Help"));
 	actionHelpDoc = menuHelp->addAction(QIcon::fromTheme("help-contents"), tr("&Documentation..."), [](){});  // TODO
-	actionHelpAbout = menuHelp->addAction(QIcon::fromTheme("help-about"), tr("&About..."), [](){});  // TODO
+	actionHelpAbout = menuHelp->addAction(QIcon::fromTheme("help-about"), tr("&About..."), this, &MainWindow::showAbout);
 
 	snapshotModel = new ItemModelSnapshot(this);
 	treeView->setModel(snapshotModel);
@@ -320,4 +322,19 @@ void MainWindow::sortIndicatorChanged(int column, Qt::SortOrder order) {
 		snapshotModel->sortRequested(column, order);
 	}
 	else treeView->header()->setSortIndicator(currentSorting.first, currentSorting.second);
+}
+
+
+#define STR(s) #s
+#define XSTR(s) STR(s)
+
+
+void MainWindow::showAbout() {
+	QMessageBox::about(this, tr("About Prebackup"),
+		"<p><b>Prebackup " XSTR(VERSION_MAJOR) "." XSTR(VERSION_MINOR) "</b></p>\n"
+		"<p>Copyright (C) 2017 Michele Alessandrini</p>\n"
+		"<p>This program comes with ABSOLUTELY NO WARRANTY. This is free software, "
+		"and you are welcome to redistribute it under certain conditions; see LICENSE for details.</p>"
+		"<p><a href=\"https://github.com/malessandrini/prebackup\">https://github.com/malessandrini/prebackup</a></p>"
+	);
 }

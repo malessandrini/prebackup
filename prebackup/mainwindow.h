@@ -63,6 +63,7 @@ private slots:
 	void compareOpen();
 	void compareClose();
 	void outputExclusion();
+	void showAbout();
 };
 
 

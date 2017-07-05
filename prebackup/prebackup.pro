@@ -27,7 +27,8 @@ HEADERS  += mainwindow.h \
 	itemModelSnapshot.h \
 	dialogRoots.h \
 	dialogListChoose.h \
-	dialogOuputFile.h
+	dialogOuputFile.h \
+	version.h
 
 TRANSLATIONS += tran/prebackup_it.ts
 
