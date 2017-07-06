@@ -41,7 +41,9 @@ two ways to compile it:
 Usage
 =====
 
-link to wiki
+See the Wiki page on GitHub:
+<https://github.com/malessandrini/prebackup/wiki>
+or click Help -> Documentation in the program.
 
 
 License

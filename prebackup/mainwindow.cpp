@@ -41,6 +41,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QCloseEvent>
 #include <QLabel>
 #include <QGroupBox>
+#include <QDesktopServices>
 using namespace std;
 
 
@@ -126,7 +127,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	actionOutputExclusion->setStatusTip(tr("Generate list of excluded directories"));
 
 	QMenu *menuHelp = menuBar()->addMenu(tr("&Help"));
-	actionHelpDoc = menuHelp->addAction(QIcon::fromTheme("help-contents"), tr("&Documentation..."), [](){});  // TODO
+	actionHelpDoc = menuHelp->addAction(QIcon::fromTheme("help-contents"), tr("&Documentation..."),
+		[](){ QDesktopServices::openUrl(QUrl("https://github.com/malessandrini/prebackup/wiki")); });
 	actionHelpAbout = menuHelp->addAction(QIcon::fromTheme("help-about"), tr("&About..."), this, &MainWindow::showAbout);
 
 	snapshotModel = new ItemModelSnapshot(this);
