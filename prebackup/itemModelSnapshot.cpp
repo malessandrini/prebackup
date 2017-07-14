@@ -163,7 +163,7 @@ QVariant ItemModelSnapshot::getContents(const QModelIndex &index, int role, bool
 		}
 		if (role == Qt::ToolTipRole) {
 			if (dir->hasErrors()) return tr("Read errors");
-			if (dir->isExcluded()) return tr("Excluded");
+			if (dir->isExcluded()) return tr("Excluded", "referring to \"directory\"");
 		}
 		break;
 	case (int)Column::FileSize:

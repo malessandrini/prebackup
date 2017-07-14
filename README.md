@@ -16,13 +16,18 @@ exclusions in several ways:
 - Scan a "snapshot" of the directories you want to backup,
   with information on the size of each directory and subdirectory
 - Set directories to be excluded and rescan a new snapshot
+  (\* see note)
 - Save a snapshot for future reference
 - Compare the current snapshot with a previously saved one,
   to check if and where abnormal increases in size have been
-  introcuded since the last backup, and possibly exclude new
+  introduced since the last backup, and possibly exclude new
   directories
 - Generate output files to be used by your backup program,
   like a list of excluded directories
+
+\* Note: currently directories are considered to be excluded
+if they contain a file named `_nobackup_`, see full
+documentation for details.
 
 
 Installation
@@ -36,6 +41,7 @@ two ways to compile it:
   the `prebackup.pro` file is, and run `qmake` and then `make`
 - Or using the Qt Creator IDE, open the project by opening the
   `prebackup.pro` file, then build and run
+(Other libraries needed: sqlite3)
 
 
 Usage
