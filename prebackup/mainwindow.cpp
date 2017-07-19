@@ -128,7 +128,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	QMenu *menuHelp = menuBar()->addMenu(tr("&Help"));
 	actionHelpDoc = menuHelp->addAction(QIcon::fromTheme("help-contents"), tr("&Documentation..."),
-		[](){ QDesktopServices::openUrl(QUrl("https://github.com/malessandrini/prebackup/wiki")); });
+		[](){ QDesktopServices::openUrl(QUrl(tr("https://github.com/malessandrini/prebackup/wiki",
+		"can point to a language-specific page"))); });
 	actionHelpAbout = menuHelp->addAction(QIcon::fromTheme("help-about"), tr("&About..."), this, &MainWindow::showAbout);
 
 	snapshotModel = new ItemModelSnapshot(this);

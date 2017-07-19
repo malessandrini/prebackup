@@ -181,7 +181,7 @@ QVariant ItemModelSnapshot::getContents(const QModelIndex &index, int role, bool
 		}
 		break;
 	case (int)Column::DiffSize:
-		if (header) return tr("diff size");
+		if (header) return tr("diff. size");
 		if (role == Qt::DisplayRole) return QString::fromStdString(Snapshot::relSizeToText(dir->getDiffSize()));
 		if (role == Qt::ForegroundRole) {
 			if (comparedSnapshot->isEmpty()) return QBrush(Qt::gray);
