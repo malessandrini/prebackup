@@ -41,6 +41,7 @@ two ways to compile it:
   the `prebackup.pro` file is, and run `qmake` and then `make`
 - Or using the Qt Creator IDE, open the project by opening the
   `prebackup.pro` file, then build and run
+
 (Other libraries needed: sqlite3)
 
 

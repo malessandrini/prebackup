@@ -45,6 +45,7 @@ compilare in due modi:
 - Oppure utilizzando l'ambiente di sviluppo Qt Creator, aprire
   il progetto aprendo il file `prebackup.pro`, quindi compilare
   ed eseguire
+
 (Altre librerie richieste: sqlite3)
 
 
