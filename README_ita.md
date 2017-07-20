@@ -53,7 +53,7 @@ Utilizzo
 ========
 
 Si veda la pagina Wiki su GitHub:
-<https://github.com/malessandrini/prebackup/wiki>
+<https://github.com/malessandrini/prebackup/wiki/Home_ita>
 o selezionare Aiuto -> Documentazione nel programma.
 
 
