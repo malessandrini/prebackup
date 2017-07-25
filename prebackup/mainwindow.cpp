@@ -42,6 +42,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QLabel>
 #include <QGroupBox>
 #include <QDesktopServices>
+#include <QInputDialog>
 using namespace std;
 
 
@@ -103,10 +104,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	actionRoots = menuSnapshot->addAction(QIcon(), tr("Select &main directories..."),
 		[this](){ DialogRoots(this).exec(); });
 	actionRoots->setStatusTip(tr("Select which directories to scan"));
+	actionExclusionTag = menuSnapshot->addAction(QIcon(), tr("Set &exclusion file tag..."), this, &MainWindow::setExclusionTag);
+	actionExclusionTag->setStatusTip(tr("Set filename to tag directories for exclusion"));
+	menuSnapshot->addSeparator();
 	actionScan = menuSnapshot->addAction(QIcon(), tr("Scan &new snapshot..."), this, &MainWindow::scanNew);
 	actionScan->setStatusTip(tr("Scan a new snapshot"));
 //	actionScanRoot = menuSnapshot->addAction(QIcon(), tr("Scan new snapshot as &root..."), this, &MainWindow::scanNewAsRoot);  // TODO
-	menuSnapshot->addSeparator();
 	actionOpen = menuSnapshot->addAction(QIcon::fromTheme("document-open"), tr("&Open snapshot..."),
 		this, &MainWindow::snapshotOpen, QKeySequence::Open);
 	actionOpen->setStatusTip(tr("Open a previously saved snapshot"));
@@ -201,6 +204,10 @@ void MainWindow::scanNew() {
 		roots = QSettings().value("roots").toStringList();
 		if (!roots.size()) return;
 	}
+	// if the user never set the exclusion filename, ask it
+	if (!QSettings().value("exclusionTagConfigured").toBool()) setExclusionTag();
+	QString exclusionTag = QSettings().value("exclusionTag", QString::fromStdString(Directory::defaultExcludeMarker)).toString();
+	Directory::setExcludeMarker(exclusionTag.toStdString());
 	vector<string> vroots;
 	for (auto const &r: roots) vroots.push_back(r.toStdString());
 	WaitCursor _;
@@ -340,4 +347,15 @@ void MainWindow::showAbout() {
 		"and you are welcome to redistribute it under certain conditions; see LICENSE for details.</p>"
 		"<p><a href=\"https://github.com/malessandrini/prebackup\">https://github.com/malessandrini/prebackup</a></p>"
 	);
+}
+
+
+void MainWindow::setExclusionTag() {
+	bool ok;
+	QString filename = QInputDialog::getText(this, tr("Exclusion tag"),
+		tr("Directories containing this filename will be excluded from the snapshot. "
+		"<br>Leave it empty and press \"Ok\" to disable it."), QLineEdit::Normal,
+		QSettings().value("exclusionTag", QString::fromStdString(Directory::defaultExcludeMarker)).toString(), &ok);
+	if (ok) QSettings().setValue("exclusionTag", filename);
+	QSettings().setValue("exclusionTagConfigured", true);  // we asked you anyway
 }

@@ -89,218 +89,238 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../mainwindow.cpp" line="77"/>
+        <location filename="../mainwindow.cpp" line="78"/>
         <source>Current snapshot</source>
         <translation>Istantanea attuale</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="87"/>
+        <location filename="../mainwindow.cpp" line="88"/>
         <source>Comparing snapshot</source>
         <translation>Istantanea di confronto</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="102"/>
+        <location filename="../mainwindow.cpp" line="103"/>
         <source>&amp;Snapshot</source>
         <translation>&amp;Istantanea</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="103"/>
+        <location filename="../mainwindow.cpp" line="104"/>
         <source>Select &amp;main directories...</source>
         <translation>Seleziona directory &amp;principali...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="105"/>
+        <location filename="../mainwindow.cpp" line="106"/>
         <source>Select which directories to scan</source>
         <translation>Seleziona quali directory scansionare</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="106"/>
+        <location filename="../mainwindow.cpp" line="107"/>
+        <source>Set &amp;exclusion file tag...</source>
+        <translation>Imposta file di &amp;esclusione...</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="108"/>
+        <source>Set filename to tag directories for exclusion</source>
+        <translation>Imposta il nome del file per escludere una directory</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="110"/>
         <source>Scan &amp;new snapshot...</source>
         <translation>&amp;Nuova istantanea...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="107"/>
+        <location filename="../mainwindow.cpp" line="111"/>
         <source>Scan a new snapshot</source>
         <translation>Scansiona una nuova istantanea</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="110"/>
+        <location filename="../mainwindow.cpp" line="113"/>
         <source>&amp;Open snapshot...</source>
         <translation>&amp;Apri istantanea...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="112"/>
+        <location filename="../mainwindow.cpp" line="115"/>
         <source>Open a previously saved snapshot</source>
         <translation>Carica un&apos;istantanea salvata in precedenza</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="113"/>
+        <location filename="../mainwindow.cpp" line="116"/>
         <source>&amp;Save snapshot...</source>
         <translation>&amp;Salva istantanea...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="115"/>
+        <location filename="../mainwindow.cpp" line="118"/>
         <source>Save the current snapshot</source>
         <translation>Salva l&apos;istantanea attuale</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="117"/>
+        <location filename="../mainwindow.cpp" line="120"/>
         <source>&amp;Compare</source>
         <translation>&amp;Confronta</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="118"/>
+        <location filename="../mainwindow.cpp" line="121"/>
         <source>&amp;Open snapshot for comparison...</source>
         <translation>&amp;Apri istantanea per il confronto...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="120"/>
+        <location filename="../mainwindow.cpp" line="123"/>
         <source>Open an existing snapshot for comparison</source>
         <translation>Carica un&apos;istantanea esistente per il confronto</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="121"/>
+        <location filename="../mainwindow.cpp" line="124"/>
         <source>&amp;Close comparison snapshot</source>
         <translation>&amp;Chiudi istantanea di confronto</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="123"/>
+        <location filename="../mainwindow.cpp" line="126"/>
         <source>Close comparison snapshot</source>
         <translation>Chiudi l&apos;istantanea di confronto</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="125"/>
+        <location filename="../mainwindow.cpp" line="128"/>
         <source>&amp;Output</source>
         <translation>&amp;Genera</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="126"/>
+        <location filename="../mainwindow.cpp" line="129"/>
         <source>&amp;Exclusion list...</source>
         <translation>Lista di &amp;esclusioni...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="127"/>
+        <location filename="../mainwindow.cpp" line="130"/>
         <source>Generate list of excluded directories</source>
         <translation>Genera la lista di directory escluse</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="129"/>
+        <location filename="../mainwindow.cpp" line="132"/>
         <source>&amp;Help</source>
         <translation>&amp;Aiuto</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="130"/>
+        <location filename="../mainwindow.cpp" line="133"/>
         <source>&amp;Documentation...</source>
         <translation>&amp;Documentazione...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="131"/>
+        <location filename="../mainwindow.cpp" line="134"/>
         <source>https://github.com/malessandrini/prebackup/wiki</source>
         <comment>can point to a language-specific page</comment>
         <translation>https://github.com/malessandrini/prebackup/wiki/Home_ita</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="133"/>
+        <location filename="../mainwindow.cpp" line="136"/>
         <source>&amp;About...</source>
         <translation>&amp;Informazioni...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="158"/>
-        <location filename="../mainwindow.cpp" line="170"/>
+        <location filename="../mainwindow.cpp" line="161"/>
+        <location filename="../mainwindow.cpp" line="173"/>
         <source>Date:</source>
         <translation>Data:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="161"/>
-        <location filename="../mainwindow.cpp" line="173"/>
+        <location filename="../mainwindow.cpp" line="164"/>
+        <location filename="../mainwindow.cpp" line="176"/>
         <source>Size:</source>
         <translation>Dimensione:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="164"/>
+        <location filename="../mainwindow.cpp" line="167"/>
         <source>Difference:</source>
         <translation>Differenza:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="181"/>
+        <location filename="../mainwindow.cpp" line="184"/>
         <source>Save snapshot</source>
         <translation>Salva istantanea</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="181"/>
+        <location filename="../mainwindow.cpp" line="184"/>
         <source>Save current snapshot?</source>
         <translation>Salvare l&apos;istantanea attuale?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="198"/>
+        <location filename="../mainwindow.cpp" line="201"/>
         <source>No directories</source>
         <translation>Nessuna directory</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="198"/>
+        <location filename="../mainwindow.cpp" line="201"/>
         <source>You must add one or more main directories first.</source>
         <translation>È necessario prima aggiungere una o più directory principali.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="232"/>
+        <location filename="../mainwindow.cpp" line="239"/>
         <source>No snapshots</source>
         <translation>Nessuna istantanea</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="232"/>
+        <location filename="../mainwindow.cpp" line="239"/>
         <source>No saved snapshots found</source>
         <translation>Non sono state trovate istantanee salvate</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="235"/>
+        <location filename="../mainwindow.cpp" line="242"/>
         <source>Open snapshot</source>
         <translation>Apri istantanea</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="235"/>
+        <location filename="../mainwindow.cpp" line="242"/>
         <source>Select snapshot to open:</source>
         <translation>Selezionare istantanea da aprire:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="245"/>
-        <location filename="../mainwindow.cpp" line="270"/>
+        <location filename="../mainwindow.cpp" line="252"/>
+        <location filename="../mainwindow.cpp" line="277"/>
         <source>Error</source>
         <translation>Errore</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="245"/>
+        <location filename="../mainwindow.cpp" line="252"/>
         <source>Unable to load file!</source>
         <translation>Impossibile caricare il file!</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="270"/>
+        <location filename="../mainwindow.cpp" line="277"/>
         <source>Unable to save file!</source>
         <translation>Impossibile salvare il file!</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="273"/>
+        <location filename="../mainwindow.cpp" line="280"/>
         <source>Snapshot saved to</source>
         <translation>Istantanea salvata in</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="301"/>
+        <location filename="../mainwindow.cpp" line="308"/>
         <source>Excluded directories</source>
         <translation>Directory escluse</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="301"/>
+        <location filename="../mainwindow.cpp" line="308"/>
         <source>List of excluded directories</source>
         <translation>Lista delle directory escluse</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="302"/>
+        <location filename="../mainwindow.cpp" line="309"/>
         <source>exclusion list is computed from the current snapshot, not from the actual directories on disk. Scan a new snapshot if you have changed the excluded directories.</source>
         <translation>la lista di esclusioni è calcolata dall&apos;istantanea attuale, non dalle directory su disco. Scansionare una nuova istantanea se le directory escluse sono state modificate.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="336"/>
+        <location filename="../mainwindow.cpp" line="343"/>
         <source>About Prebackup</source>
         <translation>Informazioni su Prebackup</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="355"/>
+        <source>Exclusion tag</source>
+        <translation>Nome file per esclusione</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="356"/>
+        <source>Directories containing this filename will be excluded from the snapshot. &lt;br&gt;Leave it empty and press &quot;Ok&quot; to disable it.</source>
+        <translation>Le directory che contengono un file con questo nome saranno escluse dall&apos;istantanea. &lt;br&gt;Lasciare vuoto e premere &quot;Ok&quot; per disabilitare.</translation>
     </message>
 </context>
 </TS>

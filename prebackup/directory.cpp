@@ -26,7 +26,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace std;
 
 
-const string Directory::excludeMarker("_nobackup_");
+const string Directory::defaultExcludeMarker(".nobackup");
+string Directory::excludeMarker;
 
 
 Directory::Directory(string const &_name, const Directory *_parent):
@@ -40,6 +41,11 @@ void Directory::clear() {
 	excluded = false;
 	errors = false;
 	subDirs.clear();
+}
+
+
+void Directory::setExcludeMarker(const std::string &marker) {
+	excludeMarker = marker;
 }
 
 
@@ -71,7 +77,7 @@ void Directory::scan(string const &parentPath) {
 		}
 		if (S_ISREG(fileStat.st_mode) || S_ISLNK(fileStat.st_mode)) {
 			// regular file or symbolic link
-			if (excludeMarker == entry->d_name && S_ISREG(fileStat.st_mode)) {
+			if (excludeMarker.size() && excludeMarker == entry->d_name && S_ISREG(fileStat.st_mode)) {
 				clear();
 				excluded = true;
 				return;

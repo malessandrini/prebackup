@@ -40,7 +40,7 @@ public:
 
 private:
 	std::pair<int, Qt::SortOrder> currentSorting;
-	QAction *actionRoots, *actionScan, *actionScanRoot, *actionOpen, *actionSave,
+	QAction *actionRoots, *actionExclusionTag, *actionScan, *actionScanRoot, *actionOpen, *actionSave,
 		*actionCompareOpen, *actionCompareClose, *actionOutputExclusion,
 		*actionHelpDoc, *actionHelpAbout;
 	QTreeView *treeView;
@@ -64,6 +64,7 @@ private slots:
 	void compareClose();
 	void outputExclusion();
 	void showAbout();
+	void setExclusionTag();
 };
 
 

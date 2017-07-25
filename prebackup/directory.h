@@ -52,6 +52,9 @@ public:
 	std::vector<Directory*>::const_iterator cend()   const { return subDirs.cend(); }
 	// sort subdirectories (invalidates iterators)
 	void sortSubDirs(std::function<bool(const Directory*, const Directory*)>);
+	// exclude marker
+	static const std::string defaultExcludeMarker;
+	static void setExcludeMarker(const std::string &);
 private:
 	const std::string name;
 	const Directory * const parent;
@@ -65,7 +68,7 @@ private:
 	VectorOfPointers<Directory> subDirs;
 	friend class Snapshot;  // to save/load from file easily
 private:
-	static const std::string excludeMarker;
+	static std::string excludeMarker;
 	void scan(std::string const &parentPath);
 	void clear();
 };

@@ -26,7 +26,7 @@ exclusions in several ways:
   like a list of excluded directories
 
 \* Note: currently directories are considered to be excluded
-if they contain a file named `_nobackup_`, see full
+if they contain a file with a given name, see full
 documentation for details.
 
 

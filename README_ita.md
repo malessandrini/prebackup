@@ -29,7 +29,7 @@ e delle parti escluse in diversi modi:
   di backup, come la lista delle directory da escludere
 
 \* Nota: attualmente una directory è considerata da escludere
-se contiene un file chiamato `_nobackup_`, si veda la
+se contiene un file con un determinato nome, si veda la
 documentazione completa.
 
 Installazione
