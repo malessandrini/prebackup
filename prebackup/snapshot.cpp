@@ -190,7 +190,7 @@ void Snapshot::removeGhosts(VectorOfPointers<Directory> &v) {
 	for (unsigned i = 0; i < v.size(); )
 		if (v[i]->ghost) {
 			delete v[i];
-			v.erase(v.cbegin() + i);
+			v.erase(v.begin() + i);
 		}
 		else ++i;
 	for (Directory *d: v) removeGhosts(d->subDirs);
