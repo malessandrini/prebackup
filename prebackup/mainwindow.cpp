@@ -335,13 +335,11 @@ void MainWindow::sortIndicatorChanged(int column, Qt::SortOrder order) {
 }
 
 
-#define STR(s) #s
-#define XSTR(s) STR(s)
-
-
 void MainWindow::showAbout() {
+	QString versionString = QString::number(VERSION_MAJOR) + "." + QString::number(VERSION_MINOR)
+		+ (VERSION_PATCH ? ("." + QString::number(VERSION_PATCH)) : QString());
 	QMessageBox::about(this, tr("About Prebackup"),
-		"<p><b>Prebackup " XSTR(VERSION_MAJOR) "." XSTR(VERSION_MINOR) "</b></p>\n"
+		"<p><b>Prebackup " + versionString + "</b></p>\n"
 		"<p>Copyright (C) 2017 Michele Alessandrini</p>\n"
 		"<p>This program comes with ABSOLUTELY NO WARRANTY. This is free software, "
 		"and you are welcome to redistribute it under certain conditions; see LICENSE for details.</p>"
